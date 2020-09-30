@@ -4,67 +4,174 @@
 {% block title %}Reports | Journal Report{% endblock %}
 {% block content %}
 
+
 <div class="row">
 
     <div class="col-12">
         <div class="card ">
             <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
                 <div class="">
-                    <h6>Balance Sheet</h6>
+                    <h6>Trial Balance</h6>
                 </div>
             </div>
             <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="bgd-gray-1">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
                             <tr>
                                 <th>Account</th>
-                                <th>Total</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
 
                             </tr>
                         </thead>
-
                         <tbody>
                             <tr>
-                                <td>
+                                <td colspan="3">
                                     <h5>Asset</h5>
                                 </td>
-                                <td>{{asset_debit.sum_total|sub:asset_credit.sum_total}}</td>
+
                             </tr>
-                            <!-- <tr>
-                                <td>
-                                    <p class="mgn-l-12">Current Asset</p>
-                                </td>
+                            <tr>
+                                <td>Fixed Asset</td>
+                                <td>{{fixed_asset_debit.sum_total}}</td>
+                                <td>{{fixed_asset_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Current Asset</td>
                                 <td>{{current_asset_debit.sum_total}}</td>
                                 <td>{{current_asset_credit.sum_total}}</td>
                             </tr>
                             <tr>
-                                <td>
-                                    <p class="mgn-l-12">Fixed Asset</p>
+                                <td colspan="3">
+                                    <h5>Liabilities</h5>
                                 </td>
-                                <td>{{fixed_asset_debit.sum_total}}</td>
-                                <td>{{fixed_asset_credit.sum_total}}</td>
-                            </tr> -->
+                            </tr>
                             <tr>
-                                <td>
+                                <td>Current Liabilities</td>
+                                <td>{{current_liabilities_debit.sum_total}}</td>
+                                <td>{{current_liabilities_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
                                     <h5>Equity</h5>
                                 </td>
-                                <td>{{equity_debit.sum_total|sub:equity_credit.sum_total}}</td>
                             </tr>
                             <tr>
-                                <td>
+                                <td>Capital</td>
+                                <td>{{capital_debit.sum_total}}</td>
+                                <td>{{capital_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>Income</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sales Revenue</td>
+                                <td>{{sales_revenue_debit.sum_total}}</td>
+                                <td>{{sales_revenue_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Misc. Income</td>
+                                <td>{{misc_income_debit.sum_total}}</td>
+                                <td>{{misc_income_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
                                     <h5>Expense</h5>
                                 </td>
-                                <td>{{expense_debit.sum_total|sub:expense_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>COGS</td>
+                                <td>{{cogs_debit.sum_total}}</td>
+                                <td>{{cogs_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Operating Expense</td>
+                                <td>{{oe_debit.sum_total}}</td>
+                                <td>{{oe_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Transportaion</td>
+                                <td>{{transportaion_debit.sum_total}}</td>
+                                <td>{{transportaion_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Charity & Donation</td>
+                                <td>{{charity_debit.sum_total}}</td>
+                                <td>{{charity_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Repair & Maintenance</td>
+                                <td>{{repair_debit.sum_total}}</td>
+                                <td>{{repair_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Rental Expense</td>
+                                <td>{{rental_debit.sum_total}}</td>
+                                <td>{{rental_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Government & Legal Fee</td>
+                                <td>{{govt_debit.sum_total}}</td>
+                                <td>{{govt_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Banking Expense</td>
+                                <td>{{bank_debit.sum_total}}</td>
+                                <td>{{bank_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Allowance</td>
+                                <td>{{allowance_debit.sum_total}}</td>
+                                <td>{{allowance_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Salary</td>
+                                <td>{{salary_debit.sum_total}}</td>
+                                <td>{{salary_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Miscellaneous Expense</td>
+                                <td>{{miscellaneous_debit.sum_total}}</td>
+                                <td>{{miscellaneous_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>Utility Expense</td>
+                                <td>{{utility_debit.sum_total}}</td>
+                                <td>{{utility_credit.sum_total}}</td>
                             </tr>
 
+
+
+
+
                         </tbody>
-
-
+                        <tfoot>
+                            <tr>
+                                <th>Account</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </tfoot>
                     </table>
-
-
                 </div>
             </div>
             <hr>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
             {% endblock %}

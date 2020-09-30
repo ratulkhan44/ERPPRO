@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'ERPPRO.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_erp',
+        'NAME': 'erppro',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

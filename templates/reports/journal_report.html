@@ -1,0 +1,47 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Reports | Journal Report{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Journal Report</h6>
+                </div>
+            </div>
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-1">
+                            <tr>
+                                <th>Voucher No</th>
+                                <th>Voucher Date</th>
+                                <th>Account</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        {% for journal in journals %}
+
+                        <tbody>
+                            <tr>
+                                <td>{{journal.voucher_no}}</td>
+                                <td>{{journal.voucher_date}}</td>
+                                <td>{{journal.account}}</td>
+                                <td>{{journal.debit}}</td>
+                                <td>{{journal.credit}}</td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+
+
+                    </table>
+
+
+                </div>
+            </div>
+            <hr>
+            {% endblock %}

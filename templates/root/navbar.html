@@ -1,0 +1,142 @@
+{% load static %}
+
+<aside class="aside-wrapper">
+  <!-- .aside-inner start -->
+  <div class="aside-inner">
+    <!-- .aisde-header start -->
+    <div class="aisde-header">
+      <img src="{% static 'images/default.jpg' %}" alt="User image" />
+      <h6 class="user-name mgn-t-15">Vela Holdooing</h6>
+    </div>
+    <!-- .aisde-header end -->
+
+    <!-- .aside-body start -->
+    <div class="aside-body">
+      <!-- .aside-menu start -->
+      <div class="aside-menu">
+        <!-- ul.aside-nav start -->
+        <ul class="nav aside-nav">
+          <!-- Index Dashboard -->
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">
+              <i class="icon-grid"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <!-- Analytics -->
+          <li class="nav-item has-submenu">
+            <a href="#" class="nav-link">
+              <i class="icon-calculator"></i>
+              <span>Sales</span>
+            </a>
+            <ul>
+              <li>
+                <a href="analytics-dashboard.html">
+                  Invoice
+                </a>
+              </li>
+              <li>
+                <a href="analytics-customers.html">
+                  Customers
+                </a>
+              </li>
+              <li>
+                <a href="analytics-reports.html">
+                  Reports
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item has-submenu">
+            <a href="#/" class="nav-link">
+              <i class="icon-wallet"></i>
+              <span>Accountant</span>
+            </a>
+            <ul>
+              <li>
+                <a href="{% url 'Accountant:chart_of_accounts' %}">
+                  Chart Of Accountant
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Accountant:base_account' %}">
+                  Base Account
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Accountant:account_type' %}">
+                  Account Type
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Accountant:new_journal' %}">
+                  New Journal +
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Accountant:all_journal' %}">
+                  All Journal
+                </a>
+              </li>
+              <li>
+                <a href="analytics-reports.html">
+                  Reports
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item has-submenu">
+            <a href="#" class="nav-link">
+              <i class="icon-user"></i>
+              <span>People</span>
+            </a>
+            <ul>
+              <li>
+                <a href="{% url 'People:company_list' %}">
+                  Company
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'People:department_list' %}">
+                  Department
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'People:create_people' %}">
+                  Create People
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'People:people_list' %}">
+                  People List
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  Reports
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-title">
+            Reports
+          </li>
+          <!-- Reports -->
+          <li class="nav-item">
+            <a href="{% url 'Reports:allreports' %}" class="nav-link">
+              <i class="icon-diamond"></i>
+              <span>All Reports</span>
+            </a>
+          </li>
+        </ul>
+        <!-- ul.aside-nav end -->
+      </div>
+      <!-- .aside-menu end -->
+    </div>
+    <!-- .aside-body end -->
+  </div>
+  <!-- .aside-inner end -->
+</aside>

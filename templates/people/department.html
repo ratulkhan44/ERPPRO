@@ -1,0 +1,96 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}People | Company{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All Department Details</h6>
+                </div>
+                <div class="">
+                    <a type="button" class="btn btn-primary-soft mb-2" data-toggle="modal"
+                        data-target="#exampleModalinput" data-whatever="@mdo">Create Department</a>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-2">
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for department in departments %}
+                            <tr>
+                                <td>{{department.company_name}}</td>
+                                <td>{{department.department_name}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="modal fade" id="exampleModalinput" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create Department</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="company_name" class="col-form-label">Company Name : </label>
+                                    <div class="form-group">
+                                        {{form.company_name}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact" class="col-form-label">Department Name : </label>
+                                    <div class="form-group">
+                                        {{form.department_name}}
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary ml-3 my-4">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endblock %}
+    {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    {% endblock %}

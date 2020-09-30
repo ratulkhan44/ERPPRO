@@ -1,0 +1,149 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Accountant | All Account{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All Account</h6>
+                </div>
+                <div class="">
+                    <a type="button" class="btn btn-primary-soft mb-2" data-toggle="modal"
+                        data-target="#exampleModalinput" data-whatever="@mdo">Create Account</a>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-2">
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Account Code</th>
+                                <th>Account Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account in accounts %}
+                            <tr>
+                                <td>{{account.account_name}}</td>
+                                <td>{{account.account_code}}</td>
+                                <td>{{account.account_type}}</td>
+                                <td>{{account.description}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="modal fade" id="exampleModalinput" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create Account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+
+                                    <label for="account_type" class="col-form-label">Account Type : </label>
+                                    <div class="form-group">
+                                        {{form.account_type}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_name" class="col-form-label">Account Name : </label>
+                                    <div class="form-group">
+                                        {{form.account_name}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_code" class="col-form-label">Account Code : </label>
+                                    <div class="form-group">
+                                        {{form.account_code}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        {{form.total_debit}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        {{form.total_credit}}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="staticEmail" class="col-form-label">Description : </label>
+                                    <div class="form-group">
+                                        {{form.description}}
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary ml-3 my-4">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endblock %}
+    {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    <script>
+
+        $(document).ready(function () {
+            $("#account_type").select2({
+                dropdownParent: $("#exampleModalinput")
+            });
+
+            $('[data-dismiss=modal]').on('click', function (e) {
+                var $t = $(this),
+                    target = $t[0].href || $t.data("target") || $t.parents('.modal') || [];
+
+                $(target)
+                    .find("input,textarea,select")
+                    .val('')
+                    .end()
+                    .find("input[type=checkbox], input[type=radio]")
+                    .prop("checked", "")
+                    .end();
+            })
+        });
+
+    </script>
+    {% endblock %}

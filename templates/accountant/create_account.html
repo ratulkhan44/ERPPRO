@@ -1,0 +1,67 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Sales | Invoice{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40">
+                <h6>Create Account</h6>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <p class="card-text mb-3 wth-sm-70p">Must ne input account type and account name</p>
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group row">
+
+                            <label for="staticEmail" class="col-md-2 col-form-label">Account Type : </label>
+                            <div class="form-group col-md-4">
+                                {{form.account_type}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="account_name" class="col-md-2 col-form-label">Account Name : </label>
+                            <div class="form-group col-md-4">
+                                {{form.account_name}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="account_code" class="col-md-2 col-form-label">Account Code : </label>
+                            <div class="form-group col-md-4">
+                                {{form.account_code}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-2 col-form-label">Description : </label>
+                            <div class="form-group col-md-4">
+                                {{form.description}}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-3 my-4">
+                            Save
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    {% endblock %}

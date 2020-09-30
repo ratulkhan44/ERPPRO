@@ -1,0 +1,99 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Reporst | All Reports{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40">
+                <h6>Reports Overview</h6>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="text-secondary pdn-10 mgn-l-10 txt-light">Business Overview</h5>
+                            <ul class="list-group list-group-flush">
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-wallet"></i>
+                                        <span class="mgn-l-10">Profit and Loss</span>
+                                    </li>
+                                </a>
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-star"></i>
+                                        <span class="mgn-l-10">Cash Flow Statement</span>
+                                    </li>
+                                </a>
+                                <a href="{% url 'Reports:balance_sheet' %}">
+                                    <li class="list-group-item">
+                                        <i class="icon-docs"></i>
+                                        <span class="mgn-l-10">Balance Sheet</span>
+                                    </li>
+                                </a>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="text-secondary pdn-10 mgn-l-10 txt-light">Accountant</h5>
+                            <ul class="list-group list-group-flush">
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-umbrella"></i>
+                                        <span class="mgn-l-10">Account Transactions</span>
+                                    </li>
+                                </a>
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-book-open"></i>
+                                        <span class="mgn-l-10">Account Type Summary</span>
+                                    </li>
+                                </a>
+                                <a href="{% url 'Reports:general_ledger' %}">
+                                    <li class="list-group-item">
+                                        <i class="icon-support"></i>
+                                        <span class="mgn-l-10">General Ledger</span>
+                                    </li>
+                                </a>
+                                <a href="{% url 'Reports:journal_report' %}">
+                                    <li class="list-group-item">
+                                        <i class=" icon-doc"></i>
+                                        <span class="mgn-l-10">Journal Report</span>
+                                    </li>
+                                </a>
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-calculator"></i>
+                                        <span class="mgn-l-10">Trial Balance</span>
+                                    </li>
+                                </a>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="text-secondary pdn-10 mgn-l-10 txt-light">Receivables</h5>
+                            <ul class="list-group list-group-flush">
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-umbrella"></i>
+                                        <span class="mgn-l-10">cras justo odio</span>
+                                    </li>
+                                </a>
+                                <a href="#">
+                                    <li class="list-group-item">
+                                        <i class="icon-star"></i>
+                                        <span class="mgn-l-10">dapibus ac facilisis in</span>
+                                    </li>
+                                </a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    {% endblock %}

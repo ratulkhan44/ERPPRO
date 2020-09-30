@@ -1,0 +1,63 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Accountant | All Journal{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All Journal</h6>
+                </div>
+                <div class="">
+                    <a type="button" class="btn btn-primary-soft mb-2" href="{% url 'Accountant:new_journal' %}">Create
+                        Journal</a>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-2">
+                            <tr>
+                                <th>Voucher No</th>
+                                <th>Voucher Date</th>
+                                <th>Debit/Credit</th>
+                                <th>For/From</th>
+                                <th>By</th>
+                                <th>On Account Of</th>
+                                <th>Particular</th>
+                                <th>Cash/Cheque</th>
+                                <th>Cheque No</th>
+                                <th>Cheque Date</th>
+                                <th>Bank</th>
+                                <th>Branch</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for journal in journals %}
+                            <tr>
+                                <td>{{journal.voucher_no}}</td>
+                                <td>{{journal.voucher_date}}</td>
+                                <td>{{journal.debit_credit}}</td>
+                                <td>{{journal.people_for}}</td>
+                                <td>{{journal.people_by}}</td>
+                                <td>{{journal.account}}</td>
+                                <td>{{journal.purpose}}</td>
+                                <td>{{journal.cash_cheque}}</td>
+                                <td>{{journal.cheque_no}}</td>
+                                <td>{{journal.cheque_date}}</td>
+                                <td>{{journal.drawn_on}}</td>
+                                <td>{{journal.branch}}</td>
+                                <td>{{journal.amount}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endblock %}

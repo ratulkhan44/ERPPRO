@@ -1,0 +1,100 @@
+{% extends 'root/base.html' %} {% block title %}Sales | Invoice{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pdn-sm-x-40">
+                <h6>Invoice</h6>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40">
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST" class="p-4">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="customer_name" class="col-sm-2 col-form-label">Customer Name</label>
+                            <div class="col-sm-4">
+                                <select class="custom-select" id="customer_name">
+                                    <option selected>Customer Name</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <label for="invoice_no" class="col-sm-2 col-form-label">Invoice No</label>
+                            <div class="col-sm-4">
+                                <input type="email" class="form-control" id="invoice_no" placeholder="Invoice No" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="invoice_date" class="col-sm-2 col-form-label">Invoice Date</label>
+                            <div class="col-sm-4">
+                                <input type="date" class="form-control" id="invoice_date" />
+                            </div>
+                            <label for="sales_date" class="col-sm-2 col-form-label">Sales Date</label>
+                            <div class="col-sm-4">
+                                <input type="date" class="form-control" id="sales_date" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="product" class="col-sm-2 col-form-label">Product</label>
+                            <div class="col-sm-4">
+                                <select class="custom-select" id="product">
+                                    <option selected>Select Products</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                            <div class="col-sm-4">
+                                <input type="number" class="form-control" id="quantity" placeholder="Quantity" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-5">
+                            <label for="rate" class="col-sm-2 col-form-label">Rate</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="rate" placeholder="Rate" />
+                            </div>
+                            <label for="quantity" class="col-sm-2 col-form-label">Total</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="quantity" placeholder="Total" />
+                            </div>
+                        </div>
+                        <hr />
+                        <h4>Mispurchase</h4>
+                        <div class="form-group row mt-5">
+                            <label for="misperchase_customer_name" class="col-sm-2 col-form-label">Customer Name</label>
+                            <div class="col-sm-4">
+                                <select class="custom-select" id="misperchase_customer_name">
+                                    <option selected>Customer Name</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                            <div class="col-sm-4">
+                                <input type="number" class="form-control" id="quantity" placeholder="Quantity" />
+                            </div>
+                            <div class="form-group row mt-5"></div>
+                            <label for="rate" class="col-sm-2 col-form-label">Rate</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="rate" placeholder="Rate" />
+                            </div>
+                            <label for="misperchase_total" class="col-sm-2 col-form-label">Total</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="misperchase_total" placeholder="Total" />
+                            </div>
+                        </div>
+                </div>
+                <button type="submit" class="btn btn-primary ml-3 my-5">
+                    Submit
+                </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block title %}People | Company{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Account Transaction</h6>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <h1>{{account_name.account_name}}</h1>
+            </div>
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-1">
+                            <tr>
+                                <th>Date</th>
+                                <th>Voucher No</th>
+                                <th>Particular</th>
+                                <th>People For/From</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account in accounts %}
+                            <tr>
+                                <td>{{account.voucher_date}}</td>
+                                <td>{{account.voucher_no}}</td>
+                                <td>{{account.particular}}</td>
+                                <td></td>
+                                <td>{{account.debit}}</td>
+                                <td>{{account.credit}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            {% endblock %}

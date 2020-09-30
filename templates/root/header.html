@@ -1,0 +1,257 @@
+{% load static %}
+
+<header class="topbar">
+  <!--navbar Logo section left-->
+  <div class="topbar-left">
+    <div class="main-logo">
+      <a href="index.html" class="madmin-logo-link">
+        <img
+          src="{% static 'images/logo.png' %}"
+          class="logo"
+          alt="Madmin logo"
+        />
+      </a>
+      <a href="index.html" class="logo-text txt-12-force">Mahmud Consortium</a>
+    </div>
+  </div>
+  <!--Topbar Logo section end-->
+
+  <!--navbar menu section right-->
+  <nav class="navbar-main navbar-full d-flex flex-nowrap flex-row">
+    <ul class="navbar-inner nav-left d-flex flex-row pl-0 mb-0 order-1">
+      <li class="text-center d-block">
+        <a href="#" class="switch-sidebar-mode text-center">
+          <i class="icon-menu"></i>
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-inner d-flex flex-row ml-auto mb-0 m-20 order-2">
+      <li class="search-dropin">
+        <a href="#" id="searchIcon" class="nav-link search-icon">
+          <i class="icon-magnifier"></i>
+        </a>
+        <div class="search-input-field">
+          <input
+            type="search"
+            class="form-control form-field"
+            placeholder="Type to search..."
+          />
+          <button class="btn">
+            <i class="icon-magnifier"></i>
+          </button>
+          <a id="closeSearchBox" href="" class="">
+            <i class="icon-close"></i>
+          </a>
+        </div>
+        <div class="shade"></div>
+      </li>
+      <li class="dropdown">
+        <a
+          href="#"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="nav-link notification-icon"
+        >
+          <i class="icon-grid"></i>
+        </a>
+        <div class="dropdown-menu pdn-8" aria-labelledby="dropdownMenuButton">
+          <div class="boxed-dropdown">
+            <a class="dropdown-icon-menu pt-3 pb-3" href="mail.html">
+              <i class="icon-envelope-open d-block"></i>
+              <span>Mail</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="chat.html">
+              <i class="icon-bubbles d-block"></i>
+              <span>Messages</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="#">
+              <i class="icon-bag d-block"></i>
+              <span>Orders</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="fullcalendar.html">
+              <i class="icon-calendar d-block"></i>
+              <span>Calender</span>
+            </a>
+          </div>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a
+          href="#"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="nav-link"
+        >
+          <i class="icon-bell"></i>
+          <span class="notify"></span>
+          <span class="heartbeat"></span>
+        </a>
+        <div class="dropdown-menu pdn-8" aria-labelledby="dropdownMenuButton">
+          <div
+            class="notification-dropdown list-group-notification list-group list-group-borderless"
+          >
+            <div class="notification-wrapper">
+              <div class="d-flex flex-row list-group-item">
+                <img
+                  src="{% static 'images/default.jpg' %}"
+                  alt="Notification"
+                  class="list-thumbnail rounded-circle"
+                />
+                <div class="info">
+                  <p class="top">Jhon Snow commented</p>
+                  <span class="bottom">02 minutes ago</span>
+                </div>
+                <div class="buttons ml-auto">
+                  <a href="#">
+                    <div class="icon-wrapper">
+                      <i class="icon-trash"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex flex-row list-group-item">
+                <img
+                  src="{% static 'images/default.jpg' %}"
+                  alt="Notification"
+                  class="list-thumbnail rounded-circle"
+                />
+                <div class="info">
+                  <p class="top">
+                    Era Lara reacted on a post you posted yesterday.
+                  </p>
+                  <span class="bottom">15 minutes ago.</span>
+                </div>
+                <div class="buttons ml-auto">
+                  <a href="#">
+                    <div class="icon-wrapper">
+                      <i class="icon-trash"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex flex-row list-group-item">
+                <img
+                  src="{% static 'images/default.jpg' %}"
+                  alt="Notification"
+                  class="list-thumbnail rounded-circle"
+                />
+                <div class="info">
+                  <p class="top">Jhon Snow wrote on your wall.</p>
+                  <span class="bottom">01 hour ago</span>
+                </div>
+                <div class="buttons ml-auto">
+                  <a href="#">
+                    <div class="icon-wrapper">
+                      <i class="icon-trash"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex flex-row list-group-item">
+                <img
+                  src="{% static 'images/default.jpg' %}"
+                  alt="Notification"
+                  class="list-thumbnail rounded-circle"
+                />
+                <div class="info">
+                  <p class="top">Jhon Censoria commented on an image.</p>
+                  <span class="bottom">06 hours ago</span>
+                </div>
+                <div class="buttons ml-auto">
+                  <a href="#">
+                    <div class="icon-wrapper">
+                      <i class="icon-trash"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex flex-row list-group-item">
+                <img
+                  src="{% static 'images/default.jpg' %}"
+                  alt="Notification"
+                  class="list-thumbnail rounded-circle"
+                />
+                <div class="info">
+                  <p class="top">Diago Estallo commented on an image.</p>
+                  <span class="bottom">20 hours ago</span>
+                </div>
+                <div class="buttons ml-auto">
+                  <a href="#">
+                    <div class="icon-wrapper">
+                      <i class="icon-trash"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-row list-group-item list-group-footer">
+              <a href="#">
+                <span class="text-uppercase">View All</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a
+          href="#"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="nav-link user-dropdown-icon"
+        >
+          <img
+            src="{% static 'images/default.jpg' %}"
+            alt="Notification"
+            class="list-thumbnail rounded-circle"
+          />
+        </a>
+        <div
+          class="user-dropdown dropdown-menu pdn-15"
+          aria-labelledby="dropdownMenuButton"
+        >
+          <div class="media">
+            <img
+              src="{% static 'images/default.jpg' %}"
+              alt="Notification"
+              class="user-thumb rounded-circle mr-3"
+            />
+            <div class="media-body">
+              <h5 class="mgn-0">Sirus Holding</h5>
+              sirus@neonmail.com
+            </div>
+          </div>
+          <ul class="list-group list-group-borderless mgn-t-15">
+            <li class="list-group-item pdn-y-5 pdn-x-0">
+              <i class="icon-user"></i>
+              <a href="#">
+                <span class="mgn-l-10">Profile</span>
+              </a>
+            </li>
+            <li class="list-group-item pdn-y-5 pdn-x-0">
+              <i class="icon-key"></i>
+              <a href="#">
+                <span class="mgn-l-10">Change password</span>
+              </a>
+            </li>
+            <li class="list-group-item pdn-y-5 pdn-x-0">
+              <i class="icon-settings"></i>
+              <a href="#">
+                <span class="mgn-l-10">Settings</span>
+              </a>
+            </li>
+            <li class="list-group-item pdn-y-5 pdn-x-0">
+              <i class="icon-logout"></i>
+              <a href="#">
+                <span class="mgn-l-10">Signout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <!--navbar menu section right end-->
+</header>

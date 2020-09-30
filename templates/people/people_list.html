@@ -1,0 +1,58 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}People | Company{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All People List</h6>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-2">
+                            <tr>
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Company</th>
+                                <th>Department</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Date Of Birth</th>
+                                <th>Blood Group</th>
+                                <th>Marital Status</th>
+                                <th>NID</th>
+                                <th>Passport</th>
+                                <th>Tracking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for people in peoples %}
+                            <tr>
+                                <td>{{people.name}}</td>
+                                <td>
+                                    <img src="/media/{{people.image}}" width="50px" alt="">
+                                </td>
+                                <td>{{people.company}}</td>
+                                <td>{{people.department}}</td>
+                                <td>{{people.contact}}</td>
+                                <td>{{people.email}}</td>
+                                <td>{{people.dob}}</td>
+                                <td>{{people.blood_group}}</td>
+                                <td>{{people.marital_status}}</td>
+                                <td>{{people.nid}}</td>
+                                <td>{{people.passport}}</td>
+                                <td>{{people.tracking}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}

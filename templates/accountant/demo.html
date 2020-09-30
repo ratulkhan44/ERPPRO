@@ -1,0 +1,130 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Sales | Invoice{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40">
+                <h6>New Journal</h6>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-2 col-form-label">Voucher No : </label>
+                            <div class="form-group col-md-4">
+                                {{form.voucher_no}}
+                            </div>
+                            <label for="staticEmail" class="col-md-2 col-form-label">Date : </label>
+                            <div class="form-group col-md-4">
+                                {{form.voucher_date}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-2 col-form-label">On account of : </label>
+                            <div class="form-group col-md-4">
+                                {{form.account}}
+                            </div>
+                            <label for="staticEmail" class="col-md-2 col-form-label">Debit/Credit : </label>
+                            <div class="form-group col-md-4">
+                                {{form.debit_credit}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-2 col-form-label">For/From : </label>
+                            <div class="form-group col-md-4">
+                                {{form.people_for}}
+                            </div>
+                            <label for="staticEmail" class="col-md-2 col-form-label">BY : </label>
+                            <div class="form-group col-md-4">
+                                {{form.people_by}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+
+                            <label for="staticEmail" class="col-md-2 col-form-label">Particular : </label>
+                            <div class="form-group col-md-4">
+                                {{form.purpose}}
+                            </div>
+                        </div>
+                        <div class="mb-4">
+
+                            <div class="form-check form-check-inline">
+                                {% for choice in form.cash_cheque %}
+                                <span class="radio pdn-5">{{ choice.tag }}</span>
+                                {{ choice.choice_label }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="cheque box border m-4 p-4">
+                            <div class="form-group row">
+                                <label for="staticEmail" class="col-md-2 col-form-label">Cheque No : </label>
+                                <div class="form-group col-md-4">
+                                    {{form.cheque_no}}
+                                </div>
+                                <label for="staticEmail" class="col-md-2 col-form-label">Dated : </label>
+                                <div class="form-group col-md-4">
+                                    {{form.cheque_date}}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+
+                                <label for="staticEmail" class="col-md-2 col-form-label">Bank : </label>
+                                <div class="form-group col-md-4">
+                                    {{form.drawn_on}}
+                                </div>
+                                <label for="staticEmail" class="col-md-2 col-form-label">Branch : </label>
+                                <div class="form-group col-md-4">
+                                    {{form.branch}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-md-2 col-form-label">Taka : </label>
+                            <div class="form-group col-md-4">
+                                {{form.amount}}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-3 my-4">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    <script>
+        $(".box").hide();
+        $(document).ready(function () {
+            $('input[type="radio"]').click(function () {
+                var inputValue = $(this).attr("value");
+                var targetBox = $("." + inputValue);
+                if (inputValue == "cheque") {
+                    $(targetBox).show(500);
+                } else {
+                    $(".box").hide();
+                }
+            });
+        });
+    </script>
+    {% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block title %}Reports | Journal Report{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Balance Sheet</h6>
+                </div>
+            </div>
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="bgd-gray-1">
+                            <tr>
+                                <th>Account</th>
+                                <th>Total</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h5>Asset</h5>
+                                </td>
+                                <td>{{asset_debit.sum_total|sub:asset_credit.sum_total}}</td>
+                            </tr>
+                            <!-- <tr>
+                                <td>
+                                    <p class="mgn-l-12">Current Asset</p>
+                                </td>
+                                <td>{{current_asset_debit.sum_total}}</td>
+                                <td>{{current_asset_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="mgn-l-12">Fixed Asset</p>
+                                </td>
+                                <td>{{fixed_asset_debit.sum_total}}</td>
+                                <td>{{fixed_asset_credit.sum_total}}</td>
+                            </tr> -->
+                            <tr>
+                                <td>
+                                    <h5>Equity</h5>
+                                </td>
+                                <td>{{equity_debit.sum_total|sub:equity_credit.sum_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Expense</h5>
+                                </td>
+                                <td>{{expense_debit.sum_total|sub:expense_credit.sum_total}}</td>
+                            </tr>
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+            </div>
+            <hr>
+            {% endblock %}

@@ -1,0 +1,223 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block title %}Reports | Journal Report{% endblock %}
+{% block content %}
+
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Profit/Loss</h6>
+                </div>
+            </div>
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Account</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>Income</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mgn-l-10">
+                                        Sales Revenue</span>
+                                </td>
+                                </td>
+                                <td>{{sales_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mgn-l-10">
+                                        Misc. Income
+                                    </span>
+                                </td>
+                                <td>{{misc_income_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Total Income</h5>
+                                </td>
+                                <td>
+                                    <h5>{{income_total}}</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><br><br></td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3">
+                                    <h5>Cost of Goods Sold</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mgn-l-10">
+                                        COGS
+                                    </span>
+                                </td>
+                                <td>{{cogs_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Total Cost of Goods Sold</h5>
+                                </td>
+                                <td>
+                                    <h5>{{cogs_total}}</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5 class="mgn-l-60">
+                                        Gross Profit
+                                    </h5>
+                                </td>
+                                <td>
+                                    <h5>{{gross_profit}}</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><br><br></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>
+                                        Others Expenses
+                                    </h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mgn-l-10">
+                                        Operating Expense
+                                    </span>
+                                </td>
+                                <td>{{oe_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mgn-l-10">
+                                        Transportaion
+                                    </span></td>
+                                <td>{{transportaion_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Charity & Donation
+                                    </span></td>
+                                <td>{{charity_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Repair & Maintenance
+                                    </span></td>
+                                <td>{{repair_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Rental Expense
+                                    </span></td>
+                                <td>{{rental_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Government & Legal Fee
+                                    </span></td>
+                                <td>{{govt_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Banking Expense
+                                    </span></td>
+                                <td>{{bank_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Allowance
+                                    </span></td>
+                                <td>{{allowance_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Salary
+                                    </span></td>
+                                <td>{{salary_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Miscellaneous Expense
+                                    </span></td>
+                                <td>{{miscellaneous_total}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mgn-l-10">
+                                        Utility Expense
+                                    </span></td>
+                                <td>{{utility_total}}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Total Expenses</h5>
+                                </td>
+                                <td>
+                                    <h5>{{all_expenses}}</h5>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3"><br><br></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <h5 class="mgn-l-60">
+                                        Net Profit/Loss
+                                    </h5>
+                                </td>
+                                <td>
+                                    <h5>
+                                        {{net_profit}}
+                                    </h5>
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Account</th>
+                                <th>Total</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <hr>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
+            {% endblock %}

@@ -29,14 +29,14 @@
                             <label for="voucher_date" class="col-md-2 col-form-label">Date : </label>
                             <div class="form-group col-md-4">
                                 <input type="date" class="form-control" id="voucher_date" name="voucher_date"
-                                    v-model="voucher_date" />
+                                    v-model="voucher_date" required />
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="voucher_no" class="col-md-2 col-form-label">Voucher No : </label>
                             <div class="form-group col-md-4">
                                 <input type="text" name="voucher_no" id="voucher_no" v-model="voucher_no"
-                                    class="form-control" />
+                                    class="form-control" required />
                             </div>
                         </div>
                         <div class="form-group row">
@@ -69,7 +69,7 @@
                             </thead>
                             <tr v-for="(journal, k) in journals" :key="k">
                                 <td>
-                                    <select name="account" class="form-control" v-model="journal.account">
+                                    <select name="account" class="form-control" v-model="journal.account" required>
                                         <option value="" disabled>Select</option>
                                         {% for account in accounts %}
                                         <option value="{{account.id}}">{{account.account_name}}</option>
@@ -82,7 +82,7 @@
                                 </td>
                                 <td>
                                     <select name="people_for_from" class="form-control"
-                                        v-model="journal.people_for_from">
+                                        v-model="journal.people_for_from" required>
                                         <option value="" disabled>Select</option>
                                         {% for people in peoples %}
                                         <option value="{{people.id}}">{{people.name}}</option>
@@ -90,7 +90,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="people_by" class="form-control" v-model="journal.people_by">
+                                    <select name="people_by" class="form-control" v-model="journal.people_by" required>
                                         <option value="" disabled>Select</option>
                                         {% for people in peoples %}
                                         <option value="{{people.id}}">{{people.name}}</option>
@@ -129,10 +129,12 @@
                             <i class="icon-plus"></i> Add Line
                         </button>
                         <br>
-                        <div class="mgn-t-45">
-                            <input class="btn btn-primary-soft mgn-l-20" v-on:click.prevent="submitForm()" type="submit"
-                                value="Save">
+                        <div v-if="calculateTotal==0">
+                            <div class="mgn-t-45">
+                                <input class="btn btn-primary-soft mgn-l-20" v-on:click.prevent="submitForm()"
+                                    type="submit" value="Save">
 
+                            </div>
                         </div>
                     </form>
 
@@ -204,6 +206,13 @@
                         this.reference = '',
                         this.notes = '',
                         this.journals = [{
+                            account: '',
+                            particular: '',
+                            people_for_from: '',
+                            people_by: '',
+                            debit: 0.00,
+                            credit: 0.00
+                        }, {
                             account: '',
                             particular: '',
                             people_for_from: '',

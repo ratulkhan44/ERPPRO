@@ -15,8 +15,8 @@
 
             <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="bgd-gray-2">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Image</th>
@@ -55,4 +55,19 @@
                     </table>
                 </div>
             </div>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
             {% endblock %}

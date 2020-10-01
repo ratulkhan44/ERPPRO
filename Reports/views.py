@@ -27,14 +27,14 @@ def journal_report(request):
 
 def account_transactions(request, id):
     accounts = ManualJournal.objects.filter(account_id=id)
-    #account_name = CreateAccount.objects.get(id=id)
+    account_name = CreateAccount.objects.get(id=id)
     # a = AccountType.objects.filter(id=1).aggregate(
     # sum_total=Sum('createaccount_account_type__total_credit'))
     # asset_debit = BaseAccount.objects.filter(id=2).aggregate(
     # sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
     # print(a)
     #abc = a.createaccount_account_type.all()
-    return render(request, 'reports/account_transactions.html', context={'accounts': accounts})
+    return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name})
 
 
 def balance_sheet(request):
@@ -197,4 +197,129 @@ def trial_balance(request):
         'miscellaneous_credit': miscellaneous_credit,
         'utility_debit': utility_debit,
         'utility_credit': utility_credit,
+    })
+
+
+def profit_loss(request):
+    sales_revenue_debit = AccountType.objects.filter(id=5).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+
+    sales_revenue_credit = AccountType.objects.filter(id=5).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    sales_total = sales_revenue_credit['sum_total'] - \
+        sales_revenue_debit['sum_total']
+    print(sales_total)
+    misc_income_debit = AccountType.objects.filter(id=6).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    misc_income_credit = AccountType.objects.filter(id=6).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    misc_income_total = misc_income_credit['sum_total'] - \
+        misc_income_debit['sum_total']
+    income_total = sales_total+misc_income_total
+
+    cogs_debit = AccountType.objects.filter(id=7).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    cogs_credit = AccountType.objects.filter(id=7).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    cogs_total = cogs_debit['sum_total'] - cogs_credit['sum_total']
+
+    gross_profit = income_total-cogs_total
+    print(gross_profit)
+
+    oe_debit = AccountType.objects.filter(id=8).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    oe_credit = AccountType.objects.filter(id=8).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    oe_total = oe_debit['sum_total'] - oe_credit['sum_total']
+
+    transportaion_debit = AccountType.objects.filter(id=9).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    transportaion_credit = AccountType.objects.filter(id=9).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    transportaion_total = transportaion_debit['sum_total'] - \
+        transportaion_credit['sum_total']
+
+    charity_debit = AccountType.objects.filter(id=10).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    charity_credit = AccountType.objects.filter(id=10).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    charity_total = charity_debit['sum_total']-charity_credit['sum_total']
+
+    repair_debit = AccountType.objects.filter(id=11).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    repair_credit = AccountType.objects.filter(id=11).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    repair_total = repair_debit['sum_total'] - repair_credit['sum_total']
+
+    rental_debit = AccountType.objects.filter(id=12).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    rental_credit = AccountType.objects.filter(id=12).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    rental_total = rental_debit['sum_total'] - rental_credit['sum_total']
+
+    govt_debit = AccountType.objects.filter(id=13).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    govt_credit = AccountType.objects.filter(id=13).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    govt_total = govt_debit['sum_total']-govt_credit['sum_total']
+
+    bank_debit = AccountType.objects.filter(id=14).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    bank_credit = AccountType.objects.filter(id=14).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    bank_total = bank_debit['sum_total']-bank_credit['sum_total']
+
+    allowance_debit = AccountType.objects.filter(id=15).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    allowance_credit = AccountType.objects.filter(id=15).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    allowance_total = allowance_debit['sum_total'] - \
+        allowance_credit['sum_total']
+
+    salary_debit = AccountType.objects.filter(id=16).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    salary_credit = AccountType.objects.filter(id=16).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    salary_total = salary_debit['sum_total']-salary_credit['sum_total']
+
+    miscellaneous_debit = AccountType.objects.filter(id=17).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    miscellaneous_credit = AccountType.objects.filter(id=17).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    miscellaneous_total = miscellaneous_debit['sum_total'] - \
+        miscellaneous_credit['sum_total']
+
+    utility_debit = AccountType.objects.filter(id=18).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    utility_credit = AccountType.objects.filter(id=18).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    utility_total = utility_debit['sum_total']-utility_credit['sum_total']
+
+    all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total + \
+        govt_total+bank_total + allowance_total + \
+        salary_total + miscellaneous_total + utility_total
+    print(cogs_total)
+    print(all_expenses)
+
+    net_profit = gross_profit - all_expenses
+
+    return render(request, 'reports/profit_loss.html', context={
+        'sales_total': sales_total,
+        'misc_income_total': misc_income_total,
+        'income_total': income_total,
+        'cogs_total': cogs_total,
+        'oe_total': oe_total,
+        'transportaion_total': transportaion_total,
+        'charity_total': charity_total,
+        'repair_total': repair_total,
+        'rental_total': rental_total,
+        'govt_total': govt_total,
+        'bank_total': bank_total,
+        'allowance_total': allowance_total,
+        'salary_total': salary_total,
+        'miscellaneous_total': miscellaneous_total,
+        'utility_total': utility_total,
+        'all_expenses': all_expenses,
+        'net_profit': net_profit,
+        'gross_profit': gross_profit,
     })

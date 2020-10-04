@@ -98,6 +98,7 @@
                                     </h5>
                                 </td>
                             </tr>
+                            {% if oe_total != 0 %}
                             <tr>
                                 <td>
                                     <span class="mgn-l-10">
@@ -106,6 +107,8 @@
                                 </td>
                                 <td>{{oe_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if transportaion_total != 0 %}
                             <tr>
                                 <td>
                                     <span class="mgn-l-10">
@@ -113,60 +116,79 @@
                                     </span></td>
                                 <td>{{transportaion_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if charity_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Charity & Donation
                                     </span></td>
                                 <td>{{charity_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if repair_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Repair & Maintenance
                                     </span></td>
                                 <td>{{repair_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if rental_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Rental Expense
                                     </span></td>
                                 <td>{{rental_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if govt_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Government & Legal Fee
                                     </span></td>
                                 <td>{{govt_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if bank_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Banking Expense
                                     </span></td>
                                 <td>{{bank_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if allowance_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Allowance
                                     </span></td>
                                 <td>{{allowance_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if salary_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Salary
                                     </span></td>
                                 <td>{{salary_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if miscellaneous_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Miscellaneous Expense
                                     </span></td>
                                 <td>{{miscellaneous_total}}</td>
                             </tr>
+                            {% endif %}
+                            {% if utility_total != 0 %}
                             <tr>
                                 <td><span class="mgn-l-10">
                                         Utility Expense
                                     </span></td>
                                 <td>{{utility_total}}</td>
                             </tr>
+                            {% endif %}
                             <tr>
                                 <td>
                                     <h5>Total Expenses</h5>

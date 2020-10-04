@@ -11,7 +11,7 @@
         <div class="card ">
             <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
                 <div class="">
-                    <h6>Balance Sheet</h6>
+                    <h6>Profit/Loss</h6>
                 </div>
             </div>
             <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
@@ -29,92 +29,46 @@
                                     <h5>Asset</h5>
                                 </td>
                             </tr>
+                            {% if current_asset_total != 0 %}
                             <tr>
-                                <td>
+                                <td colspan="3">
                                     <span class="mgn-l-10">
                                         Current Asset</span>
                                 </td>
-                                </td>
-                                <td>0.00</td>
                             </tr>
+                            {% for account in current_assets %}
                             <tr>
-                                <td>
-                                    <span class="mgn-l-10">
-                                        Fixed Asset
-                                    </span>
-                                </td>
-                                <td>0.00</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Total Asset</h5>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account}}</span></a>
                                 </td>
                                 <td>
-                                    <h5>0.00</h5>
+                                    <span class="mgn-l-30">
+                                        {{account.total_debit|sub:account.total_credit}}</span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="3"><br><br></td>
-                            </tr>
-
+                            {% endfor %}
+                            {% endif %}
+                            {% if fixed_asset_total != 0 %}
                             <tr>
                                 <td colspan="3">
-                                    <h5>Liabilities & Equities</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     <span class="mgn-l-10">
-                                        Current Liabilities
-                                    </span>
+                                        Fixed Asset</span>
                                 </td>
-                                <td>0.00</td>
                             </tr>
+                            {% for account in fixed_assets %}
                             <tr>
-                                <td>
-                                    <h5>Total Liabilities</h5>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account}}</span></a>
                                 </td>
                                 <td>
-                                    <h5>0.00</h5>
+                                    <span class="mgn-l-30">
+                                        {{account.total_debit|sub:account.total_credit}}</span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <h5>Equities</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="mgn-l-10">
-                                        Current Earnings</span>
-                                </td>
-                                </td>
-                                <td>0.00</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="mgn-l-10">
-                                        Owner's Equity
-                                    </span>
-                                </td>
-                                <td>0.00</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Total Equities</h5>
-                                </td>
-                                <td>
-                                    <h5>0.00</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Total Liabilities & Equities</h5>
-                                </td>
-                                <td>
-                                    <h5>0.00</h5>
-                                </td>
-                            </tr>
+                            {% endfor %}
+                            {% endif %}
                         </tbody>
                         <tfoot>
                             <tr>

@@ -3,6 +3,7 @@ from Accountant.models import ManualJournal, CreateAccount, AccountType, BaseAcc
 from People.models import *
 from django.db.models import Count
 from django.db.models import Sum
+from django.db.models import Q
 
 # Create your views here.
 
@@ -14,7 +15,7 @@ def allreports(request):
 def general_ledger(request):
     accounts = CreateAccount.objects.all().order_by('account_name')
 
-    #journal_accounts = ManualJournal.objects.all()
+    # journal_accounts = ManualJournal.objects.all()
     return render(request, 'reports/general_ledger.html', context={'accounts': accounts})
 
 
@@ -33,7 +34,7 @@ def account_transactions(request, id):
     # asset_debit = BaseAccount.objects.filter(id=2).aggregate(
     # sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
     # print(a)
-    #abc = a.createaccount_account_type.all()
+    # abc = a.createaccount_account_type.all()
     return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name})
 
 
@@ -323,3 +324,32 @@ def profit_loss(request):
         'net_profit': net_profit,
         'gross_profit': gross_profit,
     })
+
+
+def demo(request):
+    asset_debit = BaseAccount.objects.filter(id=1).aggregate(
+        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
+    asset_credit = BaseAccount.objects.filter(id=1).aggregate(
+        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_credit'))
+    asset_total = asset_debit['sum_total']-asset_credit['sum_total']
+    current_asset_credit = AccountType.objects.filter(id=2).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    current_asset_debit = AccountType.objects.filter(id=2).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+    fixed_asset_credit = AccountType.objects.filter(id=1).aggregate(
+        sum_total=Sum('createaccount_account_type__total_credit'))
+    fixed_asset_debit = AccountType.objects.filter(id=1).aggregate(
+        sum_total=Sum('createaccount_account_type__total_debit'))
+
+    current_asset_total = current_asset_debit['sum_total'] - \
+        current_asset_credit['sum_total']
+    fixed_asset_total = fixed_asset_debit['sum_total'] - \
+        fixed_asset_credit['sum_total']
+
+    #account_types = AccountType.objects.filter(base_account=1)
+    fixed_assets = CreateAccount.objects.filter(
+        Q(account_type=1) & (Q(total_credit__gt=0) | Q(total_debit__gt=0)))
+    current_assets = CreateAccount.objects.filter(
+        Q(account_type=2) & (Q(total_credit__gt=0) | Q(total_debit__gt=0)))
+    # print("blncccc", current_asset_total)
+    return render(request, 'reports/demo.html', context={'fixed_assets': fixed_assets, 'current_assets': current_assets, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total})

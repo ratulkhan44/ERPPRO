@@ -11,6 +11,7 @@ urlpatterns = [
     path('balance-sheet', views.balance_sheet, name='balance_sheet'),
     path('trial-balance', views.trial_balance, name='trial_balance'),
     path('profit-loss', views.profit_loss, name='profit_loss'),
+    path('demo', views.demo, name='demo'),
     path('account-transactions/<int:id>', views.account_transactions,
          name='account_transactions'),
 ]

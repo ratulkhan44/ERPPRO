@@ -24,9 +24,8 @@
                                 <th>Credit</th>
                             </tr>
                         </thead>
-                        {% for journal in journals %}
-
                         <tbody>
+                            {% for journal in journals %}
                             <tr>
                                 <td>{{journal.voucher_no}}</td>
                                 <td>{{journal.voucher_date}}</td>
@@ -34,8 +33,8 @@
                                 <td>{{journal.debit}}</td>
                                 <td>{{journal.credit}}</td>
                             </tr>
+                            {% endfor %}
                         </tbody>
-                        {% endfor %}
 
 
                     </table>

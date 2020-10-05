@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from Accountant.models import ManualJournal, CreateAccount, AccountType, BaseAccount
+from Accountant.models import ManualJournal, CreateAccount, AccountType, BaseAccount, Transaction
 from People.models import *
 from django.db.models import Count
 from django.db.models import Sum
 from django.db.models import Q
+import datetime
 
 # Create your views here.
 
@@ -346,10 +347,31 @@ def demo(request):
     fixed_asset_total = fixed_asset_debit['sum_total'] - \
         fixed_asset_credit['sum_total']
 
-    #account_types = AccountType.objects.filter(base_account=1)
+    # account_types = AccountType.objects.filter(base_account=1)
     fixed_assets = CreateAccount.objects.filter(
         Q(account_type=1) & (Q(total_credit__gt=0) | Q(total_debit__gt=0)))
     current_assets = CreateAccount.objects.filter(
         Q(account_type=2) & (Q(total_credit__gt=0) | Q(total_debit__gt=0)))
     # print("blncccc", current_asset_total)
     return render(request, 'reports/demo.html', context={'fixed_assets': fixed_assets, 'current_assets': current_assets, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total})
+
+
+def date_filter(request):
+    today = datetime.date.today()
+    start_date = today
+    end_date = '2020-10-04'
+    results = Transaction.objects.filter(
+        date__range=['2020-10-04', start_date])
+    # current_asset_credit = BaseAccount.objects.filter(id=1).aggregate(
+    #     sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+                                                      end_date, start_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    print(current_asset_credit)
+
+    # queryset = Parent.objects.filter(
+    #     child__grandchild__state=True).annotate(child_count=Count('child'))
+    # .annotate(sum_total=Sum('child__grandchild__num'))
+
+    return render(request, 'reports/date_filter.html', context={'results': results, 'current_asset_credit': current_asset_credit})

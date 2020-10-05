@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 import json
 import decimal
+import datetime
 # Create your views here.
 
 
@@ -58,11 +59,17 @@ def manual_journal(request):
         debit = data['debit']
         credit = data['credit']
 
-        account_id = CreateAccount.objects.get(id=account)
-        total_debit = account_id.total_debit+decimal.Decimal(debit)
-        total_credit = account_id.total_credit+decimal.Decimal(credit)
-        CreateAccount.objects.filter(
-            id=account).update(total_debit=total_debit, total_credit=total_credit)
+        # account_id = CreateAccount.objects.get(id=account)
+        # total_debit = account_id.total_debit+decimal.Decimal(debit)
+        # total_credit = account_id.total_credit+decimal.Decimal(credit)
+        # CreateAccount.objects.filter(
+        #     id=account).update(total_debit=total_debit, total_credit=total_credit)
+
+        Transaction.objects.create(date=voucher_date, trnsaction_type="journal",
+                                   account_id=account, total_debit=debit, total_credit=credit)
+
+        #print(voucher_date == str(transaction_account.date))
+        #print(str(transaction_account.account_id) == account)
 
         ManualJournal.objects.create(voucher_date=voucher_date, voucher_no=voucher_no, reference=reference, notes=notes, account_id=account,
                                      particular=particular, people_for_from_id=people_for_from, people_by_id=people_by, debit=debit, credit=credit)

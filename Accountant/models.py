@@ -26,10 +26,6 @@ class CreateAccount(models.Model):
         AccountType, on_delete=models.CASCADE, related_name='createaccount_account_type')
     account_name = models.CharField(max_length=100, unique=True)
     account_code = models.IntegerField(unique=True)
-    total_debit = models.DecimalField(
-        default="0.00", max_digits=12, decimal_places=2)
-    total_credit = models.DecimalField(
-        default="0.00", max_digits=12, decimal_places=2)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -55,3 +51,17 @@ class ManualJournal(models.Model):
 
     def __str__(self):
         return self.voucher_no
+
+
+class Transaction(models.Model):
+    date = models.DateField()
+    trnsaction_type = models.CharField(max_length=100, blank=True)
+    status = models.BooleanField(default=False)
+    account = models.ForeignKey(
+        CreateAccount, on_delete=models.CASCADE, related_name='transaction_account')
+    total_debit = models.DecimalField(
+        default="0.00", max_digits=12, decimal_places=2)
+    total_credit = models.DecimalField(
+        default="0.00", max_digits=12, decimal_places=2)
+    balance = models.DecimalField(
+        default="0.00", max_digits=12, decimal_places=2)

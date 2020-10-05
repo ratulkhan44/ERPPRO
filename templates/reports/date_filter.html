@@ -1,0 +1,43 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}People | Company{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All People List</h6>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Company</th>
+                                <th>Company</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{result.account}}</td>
+                                <td>{{result.date}}</td>
+                                <td>{{result.total_debit}}</td>
+                                <td>{{result.total_credit}}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <h1>{{current_asset_credit.sum_total}}</h1>
+            </div>
+            {% endblock %}

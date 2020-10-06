@@ -4,7 +4,8 @@ from People.models import *
 from django.db.models import Count
 from django.db.models import Sum
 from django.db.models import Q
-import datetime
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 # Create your views here.
 
@@ -72,94 +73,114 @@ def balance_sheet(request):
 
 
 def trial_balance(request):
-    current_asset_credit = AccountType.objects.filter(id=2).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    current_asset_debit = AccountType.objects.filter(id=2).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    fixed_asset_credit = AccountType.objects.filter(id=1).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    fixed_asset_debit = AccountType.objects.filter(id=1).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
+    today = date.today()
+    current_asset_credit = BaseAccount.objects.filter(Q(id=2) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    current_liabilities_debit = AccountType.objects.filter(id=3).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    current_liabilities_credit = AccountType.objects.filter(id=3).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    current_asset_debit = BaseAccount.objects.filter(Q(id=2) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    capital_debit = AccountType.objects.filter(id=4).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    capital_credit = AccountType.objects.filter(id=4).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    fixed_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    sales_revenue_debit = AccountType.objects.filter(id=5).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    sales_revenue_credit = AccountType.objects.filter(id=5).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    fixed_asset_debit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    misc_income_debit = AccountType.objects.filter(id=6).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    misc_income_credit = AccountType.objects.filter(id=6).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    current_liabilities_debit = BaseAccount.objects.filter(Q(id=3) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    cogs_debit = AccountType.objects.filter(id=7).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    cogs_credit = AccountType.objects.filter(id=7).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    current_liabilities_credit = BaseAccount.objects.filter(Q(id=3) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    oe_debit = AccountType.objects.filter(id=8).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    oe_credit = AccountType.objects.filter(id=8).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    capital_debit = BaseAccount.objects.filter(Q(id=4) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    transportaion_debit = AccountType.objects.filter(id=9).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    transportaion_credit = AccountType.objects.filter(id=9).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    capital_credit = BaseAccount.objects.filter(Q(id=4) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    charity_debit = AccountType.objects.filter(id=10).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    charity_credit = AccountType.objects.filter(id=10).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    sales_revenue_debit = BaseAccount.objects.filter(Q(id=5) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    repair_debit = AccountType.objects.filter(id=11).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    repair_credit = AccountType.objects.filter(id=11).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    sales_revenue_credit = BaseAccount.objects.filter(Q(id=5) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    rental_debit = AccountType.objects.filter(id=12).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    rental_credit = AccountType.objects.filter(id=12).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    misc_income_debit = BaseAccount.objects.filter(Q(id=6) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    govt_debit = AccountType.objects.filter(id=13).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    govt_credit = AccountType.objects.filter(id=13).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    misc_income_credit = BaseAccount.objects.filter(Q(id=6) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    bank_debit = AccountType.objects.filter(id=14).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    bank_credit = AccountType.objects.filter(id=14).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    cogs_debit = BaseAccount.objects.filter(Q(id=7) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    allowance_debit = AccountType.objects.filter(id=15).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    allowance_credit = AccountType.objects.filter(id=15).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    cogs_credit = BaseAccount.objects.filter(Q(id=7) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    salary_debit = AccountType.objects.filter(id=16).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    salary_credit = AccountType.objects.filter(id=16).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    oe_debit = BaseAccount.objects.filter(Q(id=8) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
 
-    miscellaneous_debit = AccountType.objects.filter(id=17).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    miscellaneous_credit = AccountType.objects.filter(id=17).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    oe_credit = BaseAccount.objects.filter(Q(id=8) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    utility_debit = AccountType.objects.filter(id=18).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    utility_credit = AccountType.objects.filter(id=18).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
+    transportaion_debit = BaseAccount.objects.filter(Q(id=9) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    transportaion_credit = BaseAccount.objects.filter(Q(id=9) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    charity_debit = BaseAccount.objects.filter(Q(id=10) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    charity_credit = BaseAccount.objects.filter(Q(id=10) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    repair_debit = BaseAccount.objects.filter(Q(id=11) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    repair_credit = BaseAccount.objects.filter(Q(id=11) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    rental_debit = BaseAccount.objects.filter(Q(id=12) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    rental_credit = BaseAccount.objects.filter(Q(id=12) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    govt_debit = BaseAccount.objects.filter(Q(id=13) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    govt_credit = BaseAccount.objects.filter(Q(id=13) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    bank_debit = BaseAccount.objects.filter(Q(id=14) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    bank_credit = BaseAccount.objects.filter(Q(id=14) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    allowance_debit = BaseAccount.objects.filter(Q(id=15) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    allowance_credit = BaseAccount.objects.filter(Q(id=15) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    salary_debit = BaseAccount.objects.filter(Q(id=16) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    salary_credit = BaseAccount.objects.filter(Q(id=16) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    miscellaneous_debit = BaseAccount.objects.filter(Q(id=17) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    miscellaneous_credit = BaseAccount.objects.filter(Q(id=17) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    utility_debit = BaseAccount.objects.filter(Q(id=18) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+
+    utility_credit = BaseAccount.objects.filter(Q(id=18) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
     return render(request, 'reports/trial_balance.html', context={
 
@@ -357,21 +378,65 @@ def demo(request):
 
 
 def date_filter(request):
-    today = datetime.date.today()
-    start_date = today
-    end_date = '2020-10-04'
-    results = Transaction.objects.filter(
-        date__range=['2020-10-04', start_date])
+    today = date.today()
+    # currentMonth = today.month
+
+    # prev_month = today - relativedelta(months=1)
+    # prev_month_first_day = date(prev_month.year, prev_month.month, 1)
+
+    # prev_month_last_day = date(
+    #     today.year, today.month, 1) - relativedelta(days=1)
+
+    # prev_year = today - relativedelta(years=1)
+    # prev_year_first_day = date(prev_year.year, 1, 1)
+    # prev_year_last_day = date(prev_year.year, 12, 31)
+
+    # prev_week = today - relativedelta(weeks=1)
+    # prev_week_first_day = date(prev_week.year, prev_week.month, 1)
+    # start_date = today
+    # end_date = '2020-10-04'
+    # first_day = today.replace(day=1)
+    # if today.day > 25:
+    #     print(first_day + relativedelta(months=1))
+    # else:
+    #     print(first_day)
+    # results = Transaction.objects.filter(
+    # date__range=['2020-10-04', start_date])
     # current_asset_credit = BaseAccount.objects.filter(id=1).aggregate(
     #     sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    # global current_asset_credit
 
-    current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-                                                      end_date, start_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    # if request.method == "POST":
+    #     date_filter = request.POST['date_filter']
 
-    print(current_asset_credit)
+    #     if date_filter == "prev_Month":
+    #         current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+    #             prev_month_first_day, prev_month_last_day])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    #         return current_asset_credit
+
+    #     elif date_filter == "prev_year":
+    #         current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+    #             prev_year_first_day, prev_year_last_day])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    #         return current_asset_credit
+
+    # print(currentMonth)
+    # print(last_year)
+    # print(last_week)
 
     # queryset = Parent.objects.filter(
     #     child__grandchild__state=True).annotate(child_count=Count('child'))
     # .annotate(sum_total=Sum('child__grandchild__num'))
 
-    return render(request, 'reports/date_filter.html', context={'results': results, 'current_asset_credit': current_asset_credit})
+    current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+    if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+        return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit})
+
+    return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit})

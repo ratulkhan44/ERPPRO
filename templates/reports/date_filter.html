@@ -20,21 +20,25 @@
                     <div class="form-group row">
                         <label for="voucher_date" class="col-md-2 col-form-label">Start Date : </label>
                         <div class="form-group col-md-4">
-                            <input type="date" class="form-control" id="start_date" name="start_date" />
+                            <input type="date" class="form-control" id="start_date" value="{{fvalue.start_date}}"
+                                name="start_date" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="voucher_date" class="col-md-2 col-form-label">End Date : </label>
                         <div class="form-group col-md-4">
-                            <input type="date" class="form-control" id="end_date" name="end_date" />
+                            <input type="date" class="form-control" id="end_date" value="{{fvalue.end_date}}"
+                                name="end_date" />
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-primary ml-3 my-4">
+                        Save
+                    </button>
                 </form>
-                <div class="">
-                    <input type="submit" value="Search">
-                </div>
+
 
 
                 <h1>{{current_asset_credit.sum_total}}</h1>
+                <h1>{{current_asset_debit.sum_total}}</h1>
             </div>
             {% endblock %}

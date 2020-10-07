@@ -427,16 +427,35 @@ def date_filter(request):
     #     child__grandchild__state=True).annotate(child_count=Count('child'))
     # .annotate(sum_total=Sum('child__grandchild__num'))
 
-    current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    def calculateBaseAccount(baseaccount, account, start_date, end_date, transaction_debit, transaction_credit):
+        baseAccount = baseaccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit)))
+        return baseAccount
+    fvalue = request.POST
+    current_asset_credit = calculateBaseAccount(
+        BaseAccount, 'asset', '1991-01-01', today, 'total_debit', 'total_credit')
+
+    # diction = {'current_asset_credit': current_asset_credit}
 
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
-        current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-            start_date, end_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+        current_asset_credit = calculateBaseAccount(
+            BaseAccount, 'asset', start_date, end_date, 'total_debit', 'total_credit')
+        # current_asset_debit = abc(
+        #     BaseAccount, 'asset', start_date, end_date, 'total_debit')
+        # fixed_asset_credit = abc(
+        #     BaseAccount, 'asset', start_date, end_date, 'total_credit')
+        # current_asset_debit = abc(
+        #     BaseAccount, 'asset', start_date, end_date, 'total_debit')
 
-        return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit})
+        print(current_asset_credit)
 
-    return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit})
+        # current_asset_credit = BaseAccount.objects.filter(Q(base_account__iexact='asset') & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+        #     start_date, end_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+
+        return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit, 'fvalue': fvalue})
+        # diction.update({'current_asset_credit': current_asset_credit})
+
+    return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit, 'fvalue': fvalue})

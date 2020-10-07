@@ -60,9 +60,12 @@ def manual_journal(request):
         debit = data['debit']
         credit = data['credit']
 
-        # account_id = CreateAccount.objects.get(id=account)
-        # total_debit = account_id.total_debit+decimal.Decimal(debit)
-        # total_credit = account_id.total_credit+decimal.Decimal(credit)
+        account_id = CreateAccount.objects.get(id=account)
+        total_debit = account_id.total_debit+decimal.Decimal(debit)
+        total_credit = account_id.total_credit+decimal.Decimal(credit)
+
+        CreateAccount.objects.filter(id=account).update(
+            total_debit=total_debit, total_credit=total_credit)
 
         Transaction.objects.create(date=voucher_date, trnsaction_type="journal",
                                    account_id=account, total_debit=debit, total_credit=credit)

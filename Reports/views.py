@@ -6,6 +6,7 @@ from django.db.models import Sum
 from django.db.models import Q
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from django.db.models.functions import Coalesce
 
 # Create your views here.
 
@@ -379,83 +380,24 @@ def demo(request):
 
 def date_filter(request):
     today = date.today()
-    # currentMonth = today.month
 
-    # prev_month = today - relativedelta(months=1)
-    # prev_month_first_day = date(prev_month.year, prev_month.month, 1)
-
-    # prev_month_last_day = date(
-    #     today.year, today.month, 1) - relativedelta(days=1)
-
-    # prev_year = today - relativedelta(years=1)
-    # prev_year_first_day = date(prev_year.year, 1, 1)
-    # prev_year_last_day = date(prev_year.year, 12, 31)
-
-    # prev_week = today - relativedelta(weeks=1)
-    # prev_week_first_day = date(prev_week.year, prev_week.month, 1)
-    # start_date = today
-    # end_date = '2020-10-04'
-    # first_day = today.replace(day=1)
-    # if today.day > 25:
-    #     print(first_day + relativedelta(months=1))
-    # else:
-    #     print(first_day)
-    # results = Transaction.objects.filter(
-    # date__range=['2020-10-04', start_date])
-    # current_asset_credit = BaseAccount.objects.filter(id=1).aggregate(
-    #     sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
-    # global current_asset_credit
-
-    # if request.method == "POST":
-    #     date_filter = request.POST['date_filter']
-
-    #     if date_filter == "prev_Month":
-    #         current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-    #             prev_month_first_day, prev_month_last_day])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
-    #         return current_asset_credit
-
-    #     elif date_filter == "prev_year":
-    #         current_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-    #             prev_year_first_day, prev_year_last_day])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
-    #         return current_asset_credit
-
-    # print(currentMonth)
-    # print(last_year)
-    # print(last_week)
-
-    # queryset = Parent.objects.filter(
-    #     child__grandchild__state=True).annotate(child_count=Count('child'))
-    # .annotate(sum_total=Sum('child__grandchild__num'))
-
-    def calculateBaseAccount(baseaccount, account, start_date, end_date, transaction_debit, transaction_credit):
-        baseAccount = baseaccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit)))
-        return baseAccount
     fvalue = request.POST
-    current_asset_credit = calculateBaseAccount(
-        BaseAccount, 'asset', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    # diction = {'current_asset_credit': current_asset_credit}
+    current_assets = CreateAccount.objects.filter(Q(account_type_id=2) & Q(transaction_account__date__range=[
+        '1991-01-01', today])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
+    fixed_assets = CreateAccount.objects.filter(Q(account_type_id=1) & Q(transaction_account__date__range=[
+        '1991-01-01', today])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
 
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
-        current_asset_credit = calculateBaseAccount(
-            BaseAccount, 'asset', start_date, end_date, 'total_debit', 'total_credit')
-        # current_asset_debit = abc(
-        #     BaseAccount, 'asset', start_date, end_date, 'total_debit')
-        # fixed_asset_credit = abc(
-        #     BaseAccount, 'asset', start_date, end_date, 'total_credit')
-        # current_asset_debit = abc(
-        #     BaseAccount, 'asset', start_date, end_date, 'total_debit')
+        current_assets = CreateAccount.objects.filter(Q(account_type_id=2) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
+        fixed_assets = CreateAccount.objects.filter(Q(account_type_id=1) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
 
-        print(current_asset_credit)
-
-        # current_asset_credit = BaseAccount.objects.filter(Q(base_account__iexact='asset') & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        #     start_date, end_date])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
-
-        return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit, 'fvalue': fvalue})
+        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_assets': fixed_assets, 'current_assets': current_assets})
         # diction.update({'current_asset_credit': current_asset_credit})
 
-    return render(request, 'reports/date_filter.html', context={'current_asset_credit': current_asset_credit, 'fvalue': fvalue})
+    return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_assets': fixed_assets, 'current_assets': current_assets})

@@ -1,7 +1,9 @@
 {% extends 'root/base.html' %}
 {% load static %}
-{% block title %}People | Company{% endblock %}
+{% load mathfilters %}
+{% block title %}Reports | Journal Report{% endblock %}
 {% block content %}
+
 
 <div class="row">
 
@@ -9,36 +11,113 @@
         <div class="card ">
             <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
                 <div class="">
-                    <h6>All People List</h6>
+                    <h6>Profit/Loss</h6>
                 </div>
             </div>
 
             <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
-
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="voucher_date" class="col-md-2 col-form-label">Start Date : </label>
-                        <div class="form-group col-md-4">
-                            <input type="date" class="form-control" id="start_date" value="{{fvalue.start_date}}"
-                                name="start_date" />
+                <div class="">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="voucher_date" class="col-md-2 col-form-label">Start Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="start_date" value="{{fvalue.start_date}}"
+                                    name="start_date" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="voucher_date" class="col-md-2 col-form-label">End Date : </label>
-                        <div class="form-group col-md-4">
-                            <input type="date" class="form-control" id="end_date" value="{{fvalue.end_date}}"
-                                name="end_date" />
+                        <div class="form-group row">
+                            <label for="voucher_date" class="col-md-2 col-form-label">End Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="end_date" value="{{fvalue.end_date}}"
+                                    name="end_date" />
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary ml-3 my-4">
-                        Save
-                    </button>
-                </form>
+                        <button type="submit" class="btn btn-primary ml-3 my-4">
+                            Save
+                        </button>
+                    </form>
+                </div>
+                <div class="table-responsive">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Account</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>Asset</h5>
+                                </td>
+                            </tr>
+                            {% for account in current_assets %}
+                            {% if account.sum_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Current Asset</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                            </tr>
 
-
-
-                <h1>{{current_asset_credit.sum_total}}</h1>
-                <h1>{{current_asset_debit.sum_total}}</h1>
+                            {% endif %}
+                            {% endfor %}
+                            {% for account in fixed_assets %}
+                            {% if account.sum_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Fixed Asset</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}</span>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Account</th>
+                                <th>Total</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
+            <hr>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
             {% endblock %}

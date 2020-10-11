@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary ml-3 my-4">
-                            Save
+                            Search
                         </button>
                     </form>
                 </div>
@@ -49,17 +49,17 @@
                         <tbody>
                             <tr>
                                 <td colspan="3">
-                                    <h5>Asset</h5>
+                                    <h5>ASSET</h5>
                                 </td>
                             </tr>
-                            {% for account in current_assets %}
-                            {% if account.sum_total != 0 %}
+                            {% if current_asset_total.sum_total %}
                             <tr>
                                 <td colspan="3">
                                     <span class="mgn-l-10">
                                         Current Asset</span>
                                 </td>
                             </tr>
+                            {% for account in current_asset_accounts %}
                             <tr>
                                 <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
                                         <span class="mgn-l-30">
@@ -71,17 +71,24 @@
                                     </span>
                                 </td>
                             </tr>
-
-                            {% endif %}
                             {% endfor %}
-                            {% for account in fixed_assets %}
-                            {% if account.sum_total != 0 %}
+                            <tr>
+                                <td>
+                                    <h5>Total Current Assets</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mgn-l-25">{{current_asset_total.sum_total}}</h5>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if fixed_asset_total.sum_total %}
                             <tr>
                                 <td colspan="3">
                                     <span class="mgn-l-10">
                                         Fixed Asset</span>
                                 </td>
                             </tr>
+                            {% for account in fixed_asset_accounts %}
                             <tr>
                                 <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
                                         <span class="mgn-l-30">
@@ -92,8 +99,94 @@
                                         {{account.sum_total}}</span>
                                 </td>
                             </tr>
-                            {% endif %}
+                            <tr>
+                                <td>
+                                    <h5>Total Fixed Assets</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mgn-l-25">{{fixed_asset_total.sum_total}}</h5>
+                                </td>
+                            </tr>
                             {% endfor %}
+                            {% endif %}
+                            <tr>
+                                <td>
+                                    <h5 class="text-center">Total Assets</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mgn-l-25">
+                                        {{current_asset_total.sum_total|add:fixed_asset_total.sum_total}}</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>LIABILITIES & EQUITIES</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <h5>LIABILITIES</h5>
+                                </td>
+                            </tr>
+                            {% if current_liabilities_total.sum_total %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Current Liabilities</span>
+                                </td>
+                            </tr>
+                            {% for account in liabilities_accounts %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>
+                                    <h5 class="text-center">Total Liabilities</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mgn-l-25">
+                                        {{current_liabilities_total.sum_total}}</h5>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if capitals_total.sum_total %}
+                            <tr>
+                                <td colspan="3">
+                                    <h5>EQUITIES</h5>
+                                </td>
+                            </tr>
+                            {% for account in capitals_accounts %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>
+                                    <h5 class="text-center">Total Equity</h5>
+                                </td>
+                                <td>
+                                    <h5 class="mgn-l-25">
+                                        {{capitals_total.sum_total.sum_total}}</h5>
+                                </td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                         <tfoot>
                             <tr>

@@ -225,6 +225,11 @@ def trial_balance(request):
 
 
 def profit_loss(request):
+    today = date.today()
+    fvalue = request.POST
+    current_year_first_day = date(today.year, 1, 1)
+    current_year_last_day = date(today.year, 12, 31)
+
     sales_revenue_debit = AccountType.objects.filter(id=5).aggregate(
         sum_total=Sum('createaccount_account_type__total_debit'))
 
@@ -380,24 +385,71 @@ def demo(request):
 
 def date_filter(request):
     today = date.today()
-
     fvalue = request.POST
 
-    current_assets = CreateAccount.objects.filter(Q(account_type_id=2) & Q(transaction_account__date__range=[
-        '1991-01-01', today])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
-    fixed_assets = CreateAccount.objects.filter(Q(account_type_id=1) & Q(transaction_account__date__range=[
-        '1991-01-01', today])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
+    def calculateAccountTypeDebit(accountType, account, start_date, end_date, transaction_debit, transaction_credit):
+        accountTypeTotal = accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))
+        return accountTypeTotal
+
+    def calculateAccountTypecredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
+        accountTypeTotal = accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))
+        return accountTypeTotal
+
+    def CalculateAccount(ledger, id, start_date, end_date, transaction_debit, transaction_credit):
+        account_total = ledger.objects.filter(Q(account_type_id=id) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_debit), 0))-(Coalesce(Sum('transaction_account__'+transaction_credit), 0)))
+        return account_total
+
+    current_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Current Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+    fixed_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Fixed Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+
+    current_asset_accounts = CalculateAccount(
+        CreateAccount, 2, '1991-01-01', today, 'total_debit', 'total_credit')
+    fixed_asset_accounts = CalculateAccount(
+        CreateAccount, 1, '1991-01-01', today, 'total_debit', 'total_credit')
+
+    current_liabilities_total = calculateAccountTypecredit(
+        AccountType, 'Current Liabilities', '1991-01-01', today, 'total_credit', 'total_debit')
+
+    liabilities_accounts = CalculateAccount(
+        CreateAccount, 3, '1991-01-01', today, 'total_credit', 'total_debit')
+
+    capitals_total = calculateAccountTypecredit(
+        AccountType, 'Capital', '1991-01-01', today, 'total_credit', 'total_debit')
+
+    capitals_accounts = CalculateAccount(
+        CreateAccount, 4, '1991-01-01', today, 'total_credit', 'total_debit')
 
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
-        current_assets = CreateAccount.objects.filter(Q(account_type_id=2) & Q(transaction_account__date__range=[
-            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
-        fixed_assets = CreateAccount.objects.filter(Q(account_type_id=1) & Q(transaction_account__date__range=[
-            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__total_debit'), 0))-(Coalesce(Sum('transaction_account__total_credit'), 0)))
+        current_asset_total = calculateAccountTypeDebit(
+            AccountType, 'Current Asset', start_date, end_date, 'total_debit', 'total_credit')
+        fixed_asset_total = calculateAccountTypeDebit(
+            AccountType, 'Fixed Asset', start_date, end_date, 'total_debit', 'total_credit')
 
-        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_assets': fixed_assets, 'current_assets': current_assets})
-        # diction.update({'current_asset_credit': current_asset_credit})
+        current_asset_accounts = CalculateAccount(
+            CreateAccount, 2, start_date, end_date, 'total_debit', 'total_credit')
+        fixed_asset_accounts = CalculateAccount(
+            CreateAccount, 1, start_date, end_date, 'total_debit', 'total_credit')
 
-    return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_assets': fixed_assets, 'current_assets': current_assets})
+        current_liabilities_total = calculateAccountTypecredit(
+            AccountType, 'Current Liabilities', start_date, end_date, 'total_debit', 'total_credit')
+
+        liabilities_accounts = CalculateAccount(
+            CreateAccount, 3, start_date, end_date, 'total_debit', 'total_credit')
+
+        capitals_total = calculateAccountTypecredit(
+            AccountType, 'Capital', start_date, end_date, today, 'total_credit', 'total_debit')
+
+        capitals_accounts = CalculateAccount(
+            CreateAccount, 4, start_date, end_date, 'total_credit', 'total_debit')
+
+        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts})
+
+    return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_total': capitals_total, 'capitals_accounts': capitals_accounts})

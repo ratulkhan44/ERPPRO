@@ -67,8 +67,22 @@ def manual_journal(request):
         CreateAccount.objects.filter(id=account).update(
             total_debit=total_debit, total_credit=total_credit)
 
-        Transaction.objects.create(date=voucher_date, trnsaction_type="journal",
-                                   account_id=account, total_debit=debit, total_credit=credit)
+        exists = Transaction.objects.filter(
+            account_id=account, date=voucher_date).exists()
+        transaction = None
+
+        if exists:
+            transaction = Transaction.objects.get(
+                account_id=account, date=voucher_date)
+            transaction_debit = transaction.total_debit+decimal.Decimal(debit)
+            transaction_credit = transaction.total_credit + \
+                decimal.Decimal(credit)
+            transaction.total_debit = transaction_debit
+            transaction.total_credit = transaction_credit
+            transaction.save()
+        else:
+            Transaction.objects.create(date=voucher_date, trnsaction_type="journal",
+                                       account_id=account, total_debit=debit, total_credit=credit)
 
         #print(voucher_date == str(transaction_account.date))
         #print(str(transaction_account.account_id) == account)

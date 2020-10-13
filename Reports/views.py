@@ -227,110 +227,145 @@ def trial_balance(request):
 def profit_loss(request):
     today = date.today()
     fvalue = request.POST
-    current_year_first_day = date(today.year, 1, 1)
-    current_year_last_day = date(today.year, 12, 31)
+    start_date = date(today.year, 1, 1)
+    end_date = date(today.year, 12, 31)
 
-    sales_revenue_debit = AccountType.objects.filter(id=5).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
+    def calculateAccountTypeDebit(accountType, account, start_date, end_date, transaction_debit, transaction_credit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
+        return accountTypeTotal
 
-    sales_revenue_credit = AccountType.objects.filter(id=5).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    sales_total = sales_revenue_credit['sum_total'] - \
-        sales_revenue_debit['sum_total']
-    print(sales_total)
-    misc_income_debit = AccountType.objects.filter(id=6).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    misc_income_credit = AccountType.objects.filter(id=6).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    misc_income_total = misc_income_credit['sum_total'] - \
-        misc_income_debit['sum_total']
+    def calculateAccountTypecredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
+        return accountTypeTotal
+
+    sales_total = calculateAccountTypecredit(
+        AccountType, 'Sales Revenue', start_date, end_date, 'total_credit', 'total_debit')
+
+    misc_income_total = calculateAccountTypecredit(
+        AccountType, 'Misc. Income', start_date, end_date, 'total_credit', 'total_debit')
     income_total = sales_total+misc_income_total
 
-    cogs_debit = AccountType.objects.filter(id=7).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    cogs_credit = AccountType.objects.filter(id=7).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    cogs_total = cogs_debit['sum_total'] - cogs_credit['sum_total']
+    cogs_total = calculateAccountTypeDebit(
+        AccountType, 'cogs', start_date, end_date, 'total_debit', 'total_credit')
 
     gross_profit = income_total-cogs_total
-    print(gross_profit)
 
-    oe_debit = AccountType.objects.filter(id=8).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    oe_credit = AccountType.objects.filter(id=8).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    oe_total = oe_debit['sum_total'] - oe_credit['sum_total']
+    oe_total = calculateAccountTypeDebit(
+        AccountType, 'Operating Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
-    transportaion_debit = AccountType.objects.filter(id=9).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    transportaion_credit = AccountType.objects.filter(id=9).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    transportaion_total = transportaion_debit['sum_total'] - \
-        transportaion_credit['sum_total']
+    transportaion_total = calculateAccountTypeDebit(
+        AccountType, 'Transporation', start_date, end_date, 'total_debit', 'total_credit')
+    charity_total = calculateAccountTypeDebit(
+        AccountType, 'Charity & Donation', start_date, end_date, 'total_debit', 'total_credit')
 
-    charity_debit = AccountType.objects.filter(id=10).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    charity_credit = AccountType.objects.filter(id=10).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    charity_total = charity_debit['sum_total']-charity_credit['sum_total']
+    repair_total = calculateAccountTypeDebit(
+        AccountType, 'Repair & Maintenance', start_date, end_date, 'total_debit', 'total_credit')
 
-    repair_debit = AccountType.objects.filter(id=11).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    repair_credit = AccountType.objects.filter(id=11).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    repair_total = repair_debit['sum_total'] - repair_credit['sum_total']
+    rental_total = calculateAccountTypeDebit(
+        AccountType, 'Rental Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
-    rental_debit = AccountType.objects.filter(id=12).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    rental_credit = AccountType.objects.filter(id=12).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    rental_total = rental_debit['sum_total'] - rental_credit['sum_total']
+    govt_total = calculateAccountTypeDebit(
+        AccountType, 'Government & Legal Fee', start_date, end_date, 'total_debit', 'total_credit')
 
-    govt_debit = AccountType.objects.filter(id=13).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    govt_credit = AccountType.objects.filter(id=13).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    govt_total = govt_debit['sum_total']-govt_credit['sum_total']
+    bank_total = calculateAccountTypeDebit(
+        AccountType, 'Banking Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
-    bank_debit = AccountType.objects.filter(id=14).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    bank_credit = AccountType.objects.filter(id=14).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    bank_total = bank_debit['sum_total']-bank_credit['sum_total']
+    allowance_total = calculateAccountTypeDebit(
+        AccountType, 'Allowance', start_date, end_date, 'total_debit', 'total_credit')
 
-    allowance_debit = AccountType.objects.filter(id=15).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    allowance_credit = AccountType.objects.filter(id=15).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    allowance_total = allowance_debit['sum_total'] - \
-        allowance_credit['sum_total']
+    salary_total = calculateAccountTypeDebit(
+        AccountType, 'Salary', start_date, end_date, 'total_debit', 'total_credit')
 
-    salary_debit = AccountType.objects.filter(id=16).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    salary_credit = AccountType.objects.filter(id=16).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    salary_total = salary_debit['sum_total']-salary_credit['sum_total']
+    miscellaneous_total = calculateAccountTypeDebit(
+        AccountType, 'Miscellaneous Expense', start_date, end_date, 'total_debit', 'total_credit')
 
-    miscellaneous_debit = AccountType.objects.filter(id=17).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    miscellaneous_credit = AccountType.objects.filter(id=17).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    miscellaneous_total = miscellaneous_debit['sum_total'] - \
-        miscellaneous_credit['sum_total']
-
-    utility_debit = AccountType.objects.filter(id=18).aggregate(
-        sum_total=Sum('createaccount_account_type__total_debit'))
-    utility_credit = AccountType.objects.filter(id=18).aggregate(
-        sum_total=Sum('createaccount_account_type__total_credit'))
-    utility_total = utility_debit['sum_total']-utility_credit['sum_total']
+    utility_total = calculateAccountTypeDebit(
+        AccountType, 'Utility Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
     all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total + \
         govt_total+bank_total + allowance_total + \
         salary_total + miscellaneous_total + utility_total
-    print(cogs_total)
-    print(all_expenses)
 
     net_profit = gross_profit - all_expenses
+
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        sales_total = calculateAccountTypecredit(
+            AccountType, 'Sales Revenue', start_date, end_date, 'total_credit', 'total_debit')
+
+        misc_income_total = calculateAccountTypecredit(
+            AccountType, 'Misc. Income', start_date, end_date, 'total_credit', 'total_debit')
+        income_total = sales_total+misc_income_total
+
+        cogs_total = calculateAccountTypeDebit(
+            AccountType, 'cogs', start_date, end_date, 'total_debit', 'total_credit')
+
+        gross_profit = income_total-cogs_total
+
+        oe_total = calculateAccountTypeDebit(
+            AccountType, 'Operating Expenses', start_date, end_date, 'total_debit', 'total_credit')
+
+        transportaion_total = calculateAccountTypeDebit(
+            AccountType, 'Transporation', start_date, end_date, 'total_debit', 'total_credit')
+        charity_total = calculateAccountTypeDebit(
+            AccountType, 'Charity & Donation', start_date, end_date, 'total_debit', 'total_credit')
+
+        repair_total = calculateAccountTypeDebit(
+            AccountType, 'Repair & Maintenance', start_date, end_date, 'total_debit', 'total_credit')
+
+        rental_total = calculateAccountTypeDebit(
+            AccountType, 'Rental Expenses', start_date, end_date, 'total_debit', 'total_credit')
+
+        govt_total = calculateAccountTypeDebit(
+            AccountType, 'Government & Legal Fee', start_date, end_date, 'total_debit', 'total_credit')
+
+        bank_total = calculateAccountTypeDebit(
+            AccountType, 'Banking Expenses', start_date, end_date, 'total_debit', 'total_credit')
+
+        allowance_total = calculateAccountTypeDebit(
+            AccountType, 'Allowance', start_date, end_date, 'total_debit', 'total_credit')
+
+        salary_total = calculateAccountTypeDebit(
+            AccountType, 'Salary', start_date, end_date, 'total_debit', 'total_credit')
+
+        miscellaneous_total = calculateAccountTypeDebit(
+            AccountType, 'Miscellaneous Expense', start_date, end_date, 'total_debit', 'total_credit')
+
+        utility_total = calculateAccountTypeDebit(
+            AccountType, 'Utility Expenses', start_date, end_date, 'total_debit', 'total_credit')
+
+        all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total + \
+            govt_total+bank_total + allowance_total + \
+            salary_total + miscellaneous_total + utility_total
+
+        net_profit = gross_profit - all_expenses
+
+        return render(request, 'reports/profit_loss.html', context={
+            'sales_total': sales_total,
+            'misc_income_total': misc_income_total,
+            'income_total': income_total,
+            'cogs_total': cogs_total,
+            'oe_total': oe_total,
+            'transportaion_total': transportaion_total,
+            'charity_total': charity_total,
+            'repair_total': repair_total,
+            'rental_total': rental_total,
+            'govt_total': govt_total,
+            'bank_total': bank_total,
+            'allowance_total': allowance_total,
+            'salary_total': salary_total,
+            'miscellaneous_total': miscellaneous_total,
+            'utility_total': utility_total,
+            'all_expenses': all_expenses,
+            'net_profit': net_profit,
+            'gross_profit': gross_profit,
+            'start_date': start_date,
+            'end_date': end_date
+        })
 
     return render(request, 'reports/profit_loss.html', context={
         'sales_total': sales_total,
@@ -351,6 +386,8 @@ def profit_loss(request):
         'all_expenses': all_expenses,
         'net_profit': net_profit,
         'gross_profit': gross_profit,
+        'start_date': start_date,
+        'end_date': end_date
     })
 
 
@@ -386,15 +423,30 @@ def demo(request):
 def date_filter(request):
     today = date.today()
     fvalue = request.POST
+    current_year_first_date = date(today.year, 1, 1)
+    current_year_last_date = date(today.year, 12, 31)
+    prev_year = today - relativedelta(years=1)
+    prev_year_first_day = date(prev_year.year, 1, 1)
+    prev_year_last_day = date(prev_year.year, 12, 31)
+
+    def calculateBaseAccountCredit(baseAccount, account, start_date, end_date, transaction_credit, transaction_debit):
+        baseAccountTotal = (baseAccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
+        return baseAccountTotal
+
+    def calculateBaseAccountDebit(baseAccount, account, start_date, end_date, transaction_debit, transaction_credit):
+        baseAccountTotal = (baseAccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
+        return baseAccountTotal
 
     def calculateAccountTypeDebit(accountType, account, start_date, end_date, transaction_debit, transaction_credit):
-        accountTypeTotal = accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
-            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
         return accountTypeTotal
 
-    def calculateAccountTypecredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
-        accountTypeTotal = accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
-            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))
+    def calculateAccountTypeCredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
         return accountTypeTotal
 
     def CalculateAccount(ledger, id, start_date, end_date, transaction_debit, transaction_credit):
@@ -412,21 +464,44 @@ def date_filter(request):
     fixed_asset_accounts = CalculateAccount(
         CreateAccount, 1, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    current_liabilities_total = calculateAccountTypecredit(
+    current_liabilities_total = calculateAccountTypeCredit(
         AccountType, 'Current Liabilities', '1991-01-01', today, 'total_credit', 'total_debit')
 
     liabilities_accounts = CalculateAccount(
         CreateAccount, 3, '1991-01-01', today, 'total_credit', 'total_debit')
 
-    capitals_total = calculateAccountTypecredit(
+    capitals_total = calculateAccountTypeCredit(
         AccountType, 'Capital', '1991-01-01', today, 'total_credit', 'total_debit')
 
     capitals_accounts = CalculateAccount(
         CreateAccount, 4, '1991-01-01', today, 'total_credit', 'total_debit')
 
+    current_income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', current_year_first_date, current_year_last_date, 'total_credit', 'total_debit')
+    current_expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', current_year_first_date, current_year_last_date, 'total_debit', 'total_credit')
+    current_year_earnings = current_income_total-current_expense_total
+    retained_income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', '1991-01-01', prev_year_last_day, 'total_credit', 'total_debit')
+    retained_expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', '1991-01-01', prev_year_last_day, 'total_debit', 'total_credit')
+    retained_earnings = retained_income_total - retained_expense_total
+    income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', '1991-01-01', today, 'total_credit', 'total_debit')
+    expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
+    equity_total = calculateBaseAccountCredit(
+        BaseAccount, 'Equity', '1991-01-01', today, 'total_credit', 'total_debit')
+    actual_equity = (income_total-expense_total) + equity_total
+
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
+        current_year_first_date = date(start_date.year, 1, 1)
+        current_year_last_date = date(end_date.year, 12, 31)
+        prev_year = today - relativedelta(years=1)
+        prev_year_first_day = date(prev_year.year, 1, 1)
+        prev_year_last_day = date(prev_year.year, 12, 31)
 
         current_asset_total = calculateAccountTypeDebit(
             AccountType, 'Current Asset', start_date, end_date, 'total_debit', 'total_credit')
@@ -438,18 +513,24 @@ def date_filter(request):
         fixed_asset_accounts = CalculateAccount(
             CreateAccount, 1, start_date, end_date, 'total_debit', 'total_credit')
 
-        current_liabilities_total = calculateAccountTypecredit(
+        current_liabilities_total = calculateAccountTypeCredit(
             AccountType, 'Current Liabilities', start_date, end_date, 'total_debit', 'total_credit')
 
         liabilities_accounts = CalculateAccount(
             CreateAccount, 3, start_date, end_date, 'total_debit', 'total_credit')
 
-        capitals_total = calculateAccountTypecredit(
-            AccountType, 'Capital', start_date, end_date, today, 'total_credit', 'total_debit')
+        capitals_total = calculateAccountTypeCredit(
+            AccountType, 'Capital', start_date, end_date, 'total_credit', 'total_debit')
 
         capitals_accounts = CalculateAccount(
             CreateAccount, 4, start_date, end_date, 'total_credit', 'total_debit')
 
-        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts})
+        income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', start_date, end_date, 'total_credit', 'total_debit')
+        expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', start_date, end_date, 'total_debit', 'total_credit')
+        current_year_earnings = income_total-expense_total
 
-    return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_total': capitals_total, 'capitals_accounts': capitals_accounts})
+        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'current_year_earnings': current_year_earnings})
+
+    return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_total': capitals_total, 'capitals_accounts': capitals_accounts, 'current_year_earnings': current_year_earnings, 'retained_earnings': retained_earnings, 'actual_equity': actual_equity})

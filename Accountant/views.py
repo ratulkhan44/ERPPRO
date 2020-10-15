@@ -90,6 +90,7 @@ def manual_journal(request):
         ManualJournal.objects.create(voucher_date=voucher_date, voucher_no=voucher_no, reference=reference, notes=notes, account_id=account,
                                      particular=particular, people_for_from_id=people_for_from, people_by_id=people_by, debit=debit, credit=credit)
         messages.success(request, 'Journal Created Successfully')
+        return render(request, 'accountant/manual_journal.html', context={'accounts': accounts, 'peoples': peoples})
 
     return render(request, 'accountant/manual_journal.html', context={'accounts': accounts, 'peoples': peoples})
 

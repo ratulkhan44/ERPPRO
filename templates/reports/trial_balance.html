@@ -20,139 +20,118 @@
                         <thead>
                             <tr>
                                 <th>Account</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
+                                <th>
+                                    <span class="mgn-l-25">
+                                        Net Debit
+                                    </span>
+                                </th>
+                                <th>
+                                    <span class="mgn-l-25">
+                                        Net Credit
+                                    </span>
+                                </th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td colspan="3">
-                                    <h5>Asset</h5>
+                                    <h5>ASSET</h5>
                                 </td>
-
                             </tr>
-                            <tr>
-                                <td>Fixed Asset</td>
-                                <td>{{fixed_asset_debit.sum_total}}</td>
-                                <td>{{fixed_asset_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Current Asset</td>
-                                <td>{{current_asset_debit.sum_total}}</td>
-                                <td>{{current_asset_credit.sum_total}}</td>
-                            </tr>
+                            {% if current_asset_total != 0 %}
                             <tr>
                                 <td colspan="3">
-                                    <h5>Liabilities</h5>
+                                    <span class="mgn-l-10">
+                                        Current Asset</span>
                                 </td>
                             </tr>
+                            {% for account in current_asset_ledger %}
                             <tr>
-                                <td>Current Liabilities</td>
-                                <td>{{current_liabilities_debit.sum_total}}</td>
-                                <td>{{current_liabilities_credit.sum_total}}</td>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                                <td></td>
                             </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if fixed_asset_total != 0 %}
                             <tr>
                                 <td colspan="3">
-                                    <h5>Equity</h5>
+                                    <span class="mgn-l-10">
+                                        Fixed Asset</span>
                                 </td>
                             </tr>
+                            {% for account in fixed_asset_ledger %}
                             <tr>
-                                <td>Capital</td>
-                                <td>{{capital_debit.sum_total}}</td>
-                                <td>{{capital_credit.sum_total}}</td>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                                <td></td>
                             </tr>
+                            {% endfor %}
+                            {% endif %}
                             <tr>
                                 <td colspan="3">
-                                    <h5>Income</h5>
+                                    <h5>EQUITY</h5>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Sales Revenue</td>
-                                <td>{{sales_revenue_debit.sum_total}}</td>
-                                <td>{{sales_revenue_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Misc. Income</td>
-                                <td>{{misc_income_debit.sum_total}}</td>
-                                <td>{{misc_income_credit.sum_total}}</td>
-                            </tr>
+                            {% if capital_total != 0 %}
                             <tr>
                                 <td colspan="3">
-                                    <h5>Expense</h5>
+                                    <span class="mgn-l-10">
+                                        Capital</span>
                                 </td>
                             </tr>
+                            {% for account in capital_ledger %}
                             <tr>
-                                <td>COGS</td>
-                                <td>{{cogs_debit.sum_total}}</td>
-                                <td>{{cogs_credit.sum_total}}</td>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                <h4>{{account.sum_total}}</h4>
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total}}
+                                    </span>
+                                </td>
+                                {% else %}
+                                <td>{{account.sum_total}}</td>
+                                {% endif %}
                             </tr>
-                            <tr>
-                                <td>Operating Expense</td>
-                                <td>{{oe_debit.sum_total}}</td>
-                                <td>{{oe_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Transportaion</td>
-                                <td>{{transportaion_debit.sum_total}}</td>
-                                <td>{{transportaion_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Charity & Donation</td>
-                                <td>{{charity_debit.sum_total}}</td>
-                                <td>{{charity_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Repair & Maintenance</td>
-                                <td>{{repair_debit.sum_total}}</td>
-                                <td>{{repair_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Rental Expense</td>
-                                <td>{{rental_debit.sum_total}}</td>
-                                <td>{{rental_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Government & Legal Fee</td>
-                                <td>{{govt_debit.sum_total}}</td>
-                                <td>{{govt_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Banking Expense</td>
-                                <td>{{bank_debit.sum_total}}</td>
-                                <td>{{bank_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Allowance</td>
-                                <td>{{allowance_debit.sum_total}}</td>
-                                <td>{{allowance_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Salary</td>
-                                <td>{{salary_debit.sum_total}}</td>
-                                <td>{{salary_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Miscellaneous Expense</td>
-                                <td>{{miscellaneous_debit.sum_total}}</td>
-                                <td>{{miscellaneous_credit.sum_total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Utility Expense</td>
-                                <td>{{utility_debit.sum_total}}</td>
-                                <td>{{utility_credit.sum_total}}</td>
-                            </tr>
-
-
-
+                            {% endfor %}
+                            {% endif %}
 
 
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Account</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
+                                <th>
+                                    Asset
+                                </th>
+                                <th>
+                                    <span class="mgn-l-25">
+                                        Net Debit
+                                    </span>
+                                </th>
+                                <th>
+                                    <span class="mgn-l-25">
+                                        Net Credit
+                                    </span>
+                                </th>
                             </tr>
                         </tfoot>
                     </table>

@@ -53,7 +53,7 @@
                                     <h5>ASSET</h5>
                                 </td>
                             </tr>
-                            {% if current_asset_total %}
+                            {% if current_asset_total != 0 %}
                             <tr>
                                 <td colspan="3">
                                     <span class="mgn-l-10">
@@ -82,7 +82,7 @@
                                 </td>
                             </tr>
                             {% endif %}
-                            {% if fixed_asset_total %}
+                            {% if fixed_asset_total != 0 %}
                             <tr>
                                 <td colspan="3">
                                     <span class="mgn-l-10">
@@ -129,7 +129,7 @@
                                     <h5>LIABILITIES</h5>
                                 </td>
                             </tr>
-                            {% if current_liabilities_total %}
+                            {% if current_liabilities_total != 0 %}
                             <tr>
                                 <td colspan="3">
                                     <span class="mgn-l-10">
@@ -159,7 +159,7 @@
                                 </td>
                             </tr>
                             {% endif %}
-                            {% if capitals_total %}
+                            {% if capitals_total != 0 %}
                             <tr>
                                 <td colspan="3">
                                     <h5>EQUITIES</h5>

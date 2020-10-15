@@ -4,7 +4,7 @@ from People.models import *
 from django.db.models import Count
 from django.db.models import Sum
 from django.db.models import Q
-from datetime import date
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models.functions import Coalesce
 
@@ -42,50 +42,176 @@ def account_transactions(request, id):
 
 
 def balance_sheet(request):
-    asset_debit = BaseAccount.objects.filter(id=1).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
-    asset_credit = BaseAccount.objects.filter(id=1).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_credit'))
-    # current_asset_credit = AccountType.objects.filter(id=2).aggregate(
-    #     sum_total=Sum('createaccount_account_type__total_credit'))
-    # current_asset_debit = AccountType.objects.filter(id=2).aggregate(
-    #     sum_total=Sum('createaccount_account_type__total_debit'))
-    # fixed_asset_credit = AccountType.objects.filter(id=1).aggregate(
-    #     sum_total=Sum('createaccount_account_type__total_credit'))
-    # fixed_asset_debit = AccountType.objects.filter(id=1).aggregate(
-    #     sum_total=Sum('createaccount_account_type__total_debit'))
-    # current_asset_debit = AccountType.objects.filter(id=1).aggregate(
-    #     sum_total=Sum('createaccount_account_type__total_debit'))
-    # expense_debit = BaseAccount.objects.filter(id=2).aggregate(
-    #     sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
-    # expense_credit = BaseAccount.objects.filter(id=2).aggregate(
-    #     sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_credit'))
-    equity_debit = BaseAccount.objects.filter(id=3).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
-    equity_credit = BaseAccount.objects.filter(id=3).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_credit'))
+    today = date.today()
+    fvalue = request.POST
+    current_year_first_date = date(today.year, 1, 1)
+    current_year_last_date = date(today.year, 12, 31)
+    prev_year = today - relativedelta(years=1)
+    prev_year_first_day = date(prev_year.year, 1, 1)
+    prev_year_last_day = date(prev_year.year, 12, 31)
 
-    liabilty_debit = BaseAccount.objects.filter(id=2).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
-    liabilty_credit = BaseAccount.objects.filter(id=2).aggregate(
-        sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_credit'))
+    def calculateBaseAccountCredit(baseAccount, account, start_date, end_date, transaction_credit, transaction_debit):
+        baseAccountTotal = (baseAccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
+        return baseAccountTotal
 
-    return render(request, 'reports/balance_sheet.html', context={'asset_debit': asset_debit, 'asset_credit': asset_credit, 'equity_debit': equity_debit, 'equity_credit': equity_credit, 'liabilty_debit': liabilty_debit, 'liabilty_credit': liabilty_credit})
+    def calculateBaseAccountDebit(baseAccount, account, start_date, end_date, transaction_debit, transaction_credit):
+        baseAccountTotal = (baseAccount.objects.filter(Q(base_account__iexact=account) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
+        return baseAccountTotal
+
+    def calculateAccountTypeDebit(accountType, account, start_date, end_date, transaction_debit, transaction_credit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
+        return accountTypeTotal
+
+    def calculateAccountTypeCredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
+        return accountTypeTotal
+
+    def CalculateAccount(ledger, id, start_date, end_date, transaction_debit, transaction_credit):
+        account_total = ledger.objects.filter(Q(account_type_id=id) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_debit), 0))-(Coalesce(Sum('transaction_account__'+transaction_credit), 0)))
+        return account_total
+
+    current_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Current Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+    fixed_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Fixed Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+
+    current_asset_accounts = CalculateAccount(
+        CreateAccount, 2, '1991-01-01', today, 'total_debit', 'total_credit')
+    fixed_asset_accounts = CalculateAccount(
+        CreateAccount, 1, '1991-01-01', today, 'total_debit', 'total_credit')
+
+    current_liabilities_total = calculateAccountTypeCredit(
+        AccountType, 'Current Liabilities', '1991-01-01', today, 'total_credit', 'total_debit')
+
+    liabilities_accounts = CalculateAccount(
+        CreateAccount, 3, '1991-01-01', today, 'total_credit', 'total_debit')
+
+    capitals_total = calculateAccountTypeCredit(
+        AccountType, 'Capital', '1991-01-01', today, 'total_credit', 'total_debit')
+
+    capitals_accounts = CalculateAccount(
+        CreateAccount, 4, '1991-01-01', today, 'total_credit', 'total_debit')
+
+    current_income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', current_year_first_date, current_year_last_date, 'total_credit', 'total_debit')
+    current_expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', current_year_first_date, current_year_last_date, 'total_debit', 'total_credit')
+    current_year_earnings = current_income_total-current_expense_total
+    retained_income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', '1991-01-01', prev_year_last_day, 'total_credit', 'total_debit')
+    retained_expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', '1991-01-01', prev_year_last_day, 'total_debit', 'total_credit')
+    retained_earnings = retained_income_total - retained_expense_total
+    income_total = calculateBaseAccountCredit(
+        BaseAccount, 'Income', '1991-01-01', today, 'total_credit', 'total_debit')
+    expense_total = calculateBaseAccountDebit(
+        BaseAccount, 'Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
+    equity_total = calculateBaseAccountCredit(
+        BaseAccount, 'Equity', '1991-01-01', today, 'total_credit', 'total_debit')
+    actual_equity = (income_total-expense_total) + equity_total
+
+    if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        convert_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        convert_end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        current_year_first_date = date(convert_end_date.year, 1, 1)
+        current_year_last_date = date(convert_end_date.year, 12, 31)
+        prev_year = convert_end_date - relativedelta(years=1)
+        prev_year_first_day = date(prev_year.year, 1, 1)
+        prev_year_last_day = date(prev_year.year, 12, 31)
+        fvalue = request.POST
+
+        current_asset_total = calculateAccountTypeDebit(
+            AccountType, 'Current Asset', '1991-01-01', end_date, 'total_debit', 'total_credit')
+        fixed_asset_total = calculateAccountTypeDebit(
+            AccountType, 'Fixed Asset', '1991-01-01', end_date, 'total_debit', 'total_credit')
+
+        current_asset_accounts = CalculateAccount(
+            CreateAccount, 2, '1991-01-01', end_date, 'total_debit', 'total_credit')
+        fixed_asset_accounts = CalculateAccount(
+            CreateAccount, 1, '1991-01-01', end_date, 'total_debit', 'total_credit')
+
+        current_liabilities_total = calculateAccountTypeCredit(
+            AccountType, 'Current Liabilities', '1991-01-01', end_date, 'total_credit', 'total_debit')
+
+        liabilities_accounts = CalculateAccount(
+            CreateAccount, 3, '1991-01-01', end_date, 'total_debit', 'total_credit')
+
+        capitals_total = calculateAccountTypeCredit(
+            AccountType, 'Capital', '1991-01-01', end_date, 'total_credit', 'total_debit')
+
+        capitals_accounts = CalculateAccount(
+            CreateAccount, 4, '1991-01-01', end_date, 'total_credit', 'total_debit')
+
+        current_income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', current_year_first_date, current_year_last_date, 'total_credit', 'total_debit')
+        current_expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', current_year_first_date, current_year_last_date, 'total_debit', 'total_credit')
+        current_year_earnings = current_income_total-current_expense_total
+        retained_income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', '1991-01-01', prev_year_last_day, 'total_credit', 'total_debit')
+        retained_expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', '1991-01-01', prev_year_last_day, 'total_debit', 'total_credit')
+        retained_earnings = retained_income_total - retained_expense_total
+        income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', '1991-01-01', end_date, 'total_credit', 'total_debit')
+        expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', '1991-01-01', end_date, 'total_debit', 'total_credit')
+        equity_total = calculateBaseAccountCredit(
+            BaseAccount, 'Equity', '1991-01-01', end_date, 'total_credit', 'total_debit')
+        actual_equity = (income_total-expense_total) + equity_total
+
+        return render(request, 'reports/balance_sheet.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_accounts': capitals_accounts, 'current_year_earnings': current_year_earnings, 'retained_earnings': retained_earnings, 'actual_equity': actual_equity})
+
+    return render(request, 'reports/balance_sheet.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_total': capitals_total, 'capitals_accounts': capitals_accounts, 'current_year_earnings': current_year_earnings, 'retained_earnings': retained_earnings, 'actual_equity': actual_equity, 'today': today})
 
 
 def trial_balance(request):
     today = date.today()
-    current_asset_credit = BaseAccount.objects.filter(Q(id=2) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
-    current_asset_debit = BaseAccount.objects.filter(Q(id=2) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    def calculateAccountTypeDebit(accountType, account, start_date, end_date, transaction_debit, transaction_credit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_debit))-(Sum('createaccount_account_type__transaction_account__'+transaction_credit)))['sum_total']) or 0
+        return accountTypeTotal
 
-    fixed_asset_credit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    def calculateAccountTypeCredit(accountType, account, start_date, end_date, transaction_credit, transaction_debit):
+        accountTypeTotal = (accountType.objects.filter(Q(account_type__iexact=account) & Q(createaccount_account_type__transaction_account__date__range=[
+            start_date, end_date])).aggregate(sum_total=(Sum('createaccount_account_type__transaction_account__'+transaction_credit))-(Sum('createaccount_account_type__transaction_account__'+transaction_debit)))['sum_total']) or 0
+        return accountTypeTotal
 
-    fixed_asset_debit = BaseAccount.objects.filter(Q(id=1) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    def calculateAccountCredit(ledger, id, start_date, end_date, transaction_credit, transaction_debit):
+        account_total = ledger.objects.filter(Q(account_type_id=id) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_credit), 0))-(Coalesce(Sum('transaction_account__'+transaction_debit), 0)))
+        return account_total
+
+    def calculateAccountDebit(ledger, id, start_date, end_date, transaction_debit, transaction_credit):
+        account_total = ledger.objects.filter(Q(account_type_id=id) & Q(transaction_account__date__range=[
+            start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_debit), 0))-(Coalesce(Sum('transaction_account__'+transaction_credit), 0)))
+        return account_total
+
+    current_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Current Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+
+    current_asset_ledger = calculateAccountCredit(
+        CreateAccount, 2, '1991-01-01', today, 'total_debit', 'total_credit')
+
+    fixed_asset_total = calculateAccountTypeDebit(
+        AccountType, 'Fixed Asset', '1991-01-01', today, 'total_debit', 'total_credit')
+
+    fixed_asset_ledger = calculateAccountCredit(
+        CreateAccount, 1, '1991-01-01', today, 'total_debit', 'total_credit')
+
+    capital_total = calculateAccountTypeCredit(
+        AccountType, 'Capital', '1991-01-01', today, 'total_credit', 'total_debit')
+
+    capital_ledger = calculateAccountCredit(
+        CreateAccount, 4, '1991-01-01', today, 'total_credit', 'total_debit')
 
     current_liabilities_debit = BaseAccount.objects.filter(Q(id=3) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
         today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
@@ -184,11 +310,12 @@ def trial_balance(request):
         today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
 
     return render(request, 'reports/trial_balance.html', context={
-
-        'current_asset_credit': current_asset_credit,
-        'current_asset_debit': current_asset_debit,
-        'fixed_asset_credit': fixed_asset_credit,
-        'fixed_asset_debit': fixed_asset_debit,
+        'current_asset_total': current_asset_total,
+        'current_asset_ledger': current_asset_ledger,
+        'fixed_asset_total': fixed_asset_total,
+        'fixed_asset_ledger': fixed_asset_ledger,
+        'capital_total': capital_total,
+        'capital_ledger': capital_ledger,
         'current_liabilities_debit': current_liabilities_debit,
         'current_liabilities_credit': current_liabilities_credit,
         'capital_debit': capital_debit,
@@ -497,40 +624,55 @@ def date_filter(request):
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
-        current_year_first_date = date(start_date.year, 1, 1)
-        current_year_last_date = date(end_date.year, 12, 31)
-        prev_year = today - relativedelta(years=1)
+        convert_start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        convert_end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        current_year_first_date = date(convert_end_date.year, 1, 1)
+        current_year_last_date = date(convert_end_date.year, 12, 31)
+        prev_year = convert_end_date - relativedelta(years=1)
         prev_year_first_day = date(prev_year.year, 1, 1)
         prev_year_last_day = date(prev_year.year, 12, 31)
+        fvalue = request.POST
 
         current_asset_total = calculateAccountTypeDebit(
-            AccountType, 'Current Asset', start_date, end_date, 'total_debit', 'total_credit')
+            AccountType, 'Current Asset', '1991-01-01', end_date, 'total_debit', 'total_credit')
         fixed_asset_total = calculateAccountTypeDebit(
-            AccountType, 'Fixed Asset', start_date, end_date, 'total_debit', 'total_credit')
+            AccountType, 'Fixed Asset', '1991-01-01', end_date, 'total_debit', 'total_credit')
 
         current_asset_accounts = CalculateAccount(
-            CreateAccount, 2, start_date, end_date, 'total_debit', 'total_credit')
+            CreateAccount, 2, '1991-01-01', end_date, 'total_debit', 'total_credit')
         fixed_asset_accounts = CalculateAccount(
-            CreateAccount, 1, start_date, end_date, 'total_debit', 'total_credit')
+            CreateAccount, 1, '1991-01-01', end_date, 'total_debit', 'total_credit')
 
         current_liabilities_total = calculateAccountTypeCredit(
-            AccountType, 'Current Liabilities', start_date, end_date, 'total_debit', 'total_credit')
+            AccountType, 'Current Liabilities', '1991-01-01', end_date, 'total_credit', 'total_debit')
 
         liabilities_accounts = CalculateAccount(
-            CreateAccount, 3, start_date, end_date, 'total_debit', 'total_credit')
+            CreateAccount, 3, '1991-01-01', end_date, 'total_debit', 'total_credit')
 
         capitals_total = calculateAccountTypeCredit(
-            AccountType, 'Capital', start_date, end_date, 'total_credit', 'total_debit')
+            AccountType, 'Capital', '1991-01-01', end_date, 'total_credit', 'total_debit')
 
         capitals_accounts = CalculateAccount(
-            CreateAccount, 4, start_date, end_date, 'total_credit', 'total_debit')
+            CreateAccount, 4, '1991-01-01', end_date, 'total_credit', 'total_debit')
 
+        current_income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', current_year_first_date, current_year_last_date, 'total_credit', 'total_debit')
+        current_expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', current_year_first_date, current_year_last_date, 'total_debit', 'total_credit')
+        current_year_earnings = current_income_total-current_expense_total
+        retained_income_total = calculateBaseAccountCredit(
+            BaseAccount, 'Income', '1991-01-01', prev_year_last_day, 'total_credit', 'total_debit')
+        retained_expense_total = calculateBaseAccountDebit(
+            BaseAccount, 'Expenses', '1991-01-01', prev_year_last_day, 'total_debit', 'total_credit')
+        retained_earnings = retained_income_total - retained_expense_total
         income_total = calculateBaseAccountCredit(
-            BaseAccount, 'Income', start_date, end_date, 'total_credit', 'total_debit')
+            BaseAccount, 'Income', '1991-01-01', end_date, 'total_credit', 'total_debit')
         expense_total = calculateBaseAccountDebit(
-            BaseAccount, 'Expenses', start_date, end_date, 'total_debit', 'total_credit')
-        current_year_earnings = income_total-expense_total
+            BaseAccount, 'Expenses', '1991-01-01', end_date, 'total_debit', 'total_credit')
+        equity_total = calculateBaseAccountCredit(
+            BaseAccount, 'Equity', '1991-01-01', end_date, 'total_credit', 'total_debit')
+        actual_equity = (income_total-expense_total) + equity_total
 
-        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'current_year_earnings': current_year_earnings})
+        return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_accounts': capitals_accounts, 'current_year_earnings': current_year_earnings, 'retained_earnings': retained_earnings, 'actual_equity': actual_equity})
 
     return render(request, 'reports/date_filter.html', context={'fvalue': fvalue, 'fixed_asset_accounts': fixed_asset_accounts, 'current_asset_accounts': current_asset_accounts, 'current_asset_total': current_asset_total, 'fixed_asset_total': fixed_asset_total, 'current_liabilities_total': current_liabilities_total, 'liabilities_accounts': liabilities_accounts, 'capitals_total': capitals_total, 'capitals_accounts': capitals_accounts, 'current_year_earnings': current_year_earnings, 'retained_earnings': retained_earnings, 'actual_equity': actual_equity})

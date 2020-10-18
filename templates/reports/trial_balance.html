@@ -52,12 +52,22 @@
                                         <span class="mgn-l-30">
                                             {{account.account_name}}</span></a>
                                 </td>
+                                {% if account.sum_total > 0 %}
                                 <td>
                                     <span class="mgn-l-30">
-                                        {{account.sum_total}}
+                                        {{account.sum_total|abs}}
                                     </span>
                                 </td>
                                 <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                             {% endif %}
@@ -101,20 +111,489 @@
                                         <span class="mgn-l-30">
                                             {{account.account_name}}</span></a>
                                 </td>
-                                <h4>{{account.sum_total}}</h4>
                                 {% if account.sum_total < 0 %}
                                 <td>
                                     <span class="mgn-l-30">
-                                        {{account.sum_total}}
+                                        {{account.sum_total|abs}}
                                     </span>
                                 </td>
-                                {% else %}
-                                <td>{{account.sum_total}}</td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            <tr>
+                                <td colspan="3">
+                                    <h5>Income</h5>
+                                </td>
+                            </tr>
+                            {% if sales_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Sales Revenue</span>
+                                </td>
+                            </tr>
+                            {% for account in sales_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if misc_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Misc. Income</span>
+                                </td>
+                            </tr>
+                            {% for account in misc_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            <tr>
+                                <td colspan="3">
+                                    <h5>EXPENSE</h5>
+                                </td>
+                            </tr>
+                            {% if cogs_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        COGS</span>
+                                </td>
+                            </tr>
+                            {% for account in cogs_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if oe_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Operating Expense</span>
+                                </td>
+                            </tr>
+                            {% for account in oe_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if transportation_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Transportaion</span>
+                                </td>
+                            </tr>
+                            {% for account in transportion_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if charity_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Charity & Donation</span>
+                                </td>
+                            </tr>
+                            {% for account in charity_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if repair_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Repair & Maintenance</span>
+                                </td>
+                            </tr>
+                            {% for account in repair_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if rental_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Rental Expenses</span>
+                                </td>
+                            </tr>
+                            {% for account in rental_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if govt_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Government & Legal Fee</span>
+                                </td>
+                            </tr>
+                            {% for k,account in govt_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if bank_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Banking Expenses</span>
+                                </td>
+                            </tr>
+                            {% for account in bank_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if allowance_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Allowance</span>
+                                </td>
+                            </tr>
+                            {% for account in allowance_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if salary_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Allowance</span>
+                                </td>
+                            </tr>
+                            {% for account in salary_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if miscellanous_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Allowance</span>
+                                </td>
+                            </tr>
+                            {% for account in miscellanous_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% if utility_total != 0 %}
+                            <tr>
+                                <td colspan="3">
+                                    <span class="mgn-l-10">
+                                        Utility Expense</span>
+                                </td>
+                            </tr>
+                            {% for account in utility_ledger %}
+                            <tr>
+                                <td><a href="{% url 'Reports:account_transactions' id=account.id %}">
+                                        <span class="mgn-l-30">
+                                            {{account.account_name}}</span></a>
+                                </td>
+                                {% if account.sum_total > 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+                                        {{account.sum_total|abs}}
+                                    </span>
+                                </td>
+                                <td></td>
+                                {% endif %}
+                                {% if account.sum_total < 0 %}
+                                <td>
+                                    <span class="mgn-l-30">
+
+                                    </span>
+                                </td>
+                                <td>{{account.sum_total|abs}}</td>
                                 {% endif %}
                             </tr>
                             {% endfor %}
                             {% endif %}
 
+                            <tr>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
 
                         </tbody>
                         <tfoot>

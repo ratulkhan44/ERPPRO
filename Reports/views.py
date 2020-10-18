@@ -195,10 +195,12 @@ def trial_balance(request):
             start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_debit), 0))-(Coalesce(Sum('transaction_account__'+transaction_credit), 0)))
         return account_total
 
+    a = Transaction.objects.filter()
+
     current_asset_total = calculateAccountTypeDebit(
         AccountType, 'Current Asset', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    current_asset_ledger = calculateAccountCredit(
+    current_asset_ledger = calculateAccountDebit(
         CreateAccount, 2, '1991-01-01', today, 'total_debit', 'total_credit')
 
     fixed_asset_total = calculateAccountTypeDebit(
@@ -213,101 +215,96 @@ def trial_balance(request):
     capital_ledger = calculateAccountCredit(
         CreateAccount, 4, '1991-01-01', today, 'total_credit', 'total_debit')
 
-    current_liabilities_debit = BaseAccount.objects.filter(Q(id=3) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    sales_total = calculateAccountTypeCredit(
+        AccountType, 'Sales Revenue', '1991-01-01', today, 'total_credit', 'total_debit')
 
-    current_liabilities_credit = BaseAccount.objects.filter(Q(id=3) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    sales_ledger = calculateAccountCredit(
+        CreateAccount, 5, '1991-01-01', today, 'total_credit', 'total_debit')
 
-    capital_debit = BaseAccount.objects.filter(Q(id=4) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    misc_total = calculateAccountTypeCredit(
+        AccountType, 'Misc. Income', '1991-01-01', today, 'total_credit', 'total_debit')
 
-    capital_credit = BaseAccount.objects.filter(Q(id=4) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    misc_ledger = calculateAccountCredit(
+        CreateAccount, 6, '1991-01-01', today, 'total_credit', 'total_debit')
 
-    sales_revenue_debit = BaseAccount.objects.filter(Q(id=5) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    cogs_total = calculateAccountTypeDebit(
+        AccountType, 'COGS', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    sales_revenue_credit = BaseAccount.objects.filter(Q(id=5) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    cogs_ledger = calculateAccountDebit(
+        CreateAccount, 7, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    misc_income_debit = BaseAccount.objects.filter(Q(id=6) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    oe_total = calculateAccountTypeDebit(
+        AccountType, 'Operating Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    misc_income_credit = BaseAccount.objects.filter(Q(id=6) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    oe_ledger = calculateAccountDebit(
+        CreateAccount, 8, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    cogs_debit = BaseAccount.objects.filter(Q(id=7) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    transportation_total = calculateAccountTypeDebit(
+        AccountType, 'Transporation', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    cogs_credit = BaseAccount.objects.filter(Q(id=7) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    transportaion_ledger = calculateAccountDebit(
+        CreateAccount, 9, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    oe_debit = BaseAccount.objects.filter(Q(id=8) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    charity_total = calculateAccountTypeDebit(
+        AccountType, 'Charity & Donation', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    oe_credit = BaseAccount.objects.filter(Q(id=8) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    charity_ledger = calculateAccountDebit(
+        CreateAccount, 10, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    transportaion_debit = BaseAccount.objects.filter(Q(id=9) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    repair_total = calculateAccountTypeDebit(
+        AccountType, 'Repair & Maintenance', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    transportaion_credit = BaseAccount.objects.filter(Q(id=9) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    repair_ledger = calculateAccountDebit(
+        CreateAccount, 11, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    charity_debit = BaseAccount.objects.filter(Q(id=10) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    rental_total = calculateAccountTypeDebit(
+        AccountType, 'Rental Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    charity_credit = BaseAccount.objects.filter(Q(id=10) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    rental_ledger = calculateAccountDebit(
+        CreateAccount, 12, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    repair_debit = BaseAccount.objects.filter(Q(id=11) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    govt_total = calculateAccountTypeDebit(
+        AccountType, 'Government & Legal Fee', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    repair_credit = BaseAccount.objects.filter(Q(id=11) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    govt_ledger = calculateAccountDebit(
+        CreateAccount, 13, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    rental_debit = BaseAccount.objects.filter(Q(id=12) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    bank_total = calculateAccountTypeDebit(
+        AccountType, 'Banking Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    rental_credit = BaseAccount.objects.filter(Q(id=12) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    bank_ledger = calculateAccountDebit(
+        CreateAccount, 14, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    govt_debit = BaseAccount.objects.filter(Q(id=13) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    allowance_total = calculateAccountTypeDebit(
+        AccountType, 'Allowance', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    govt_credit = BaseAccount.objects.filter(Q(id=13) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    allowance_ledger = calculateAccountDebit(
+        CreateAccount, 15, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    bank_debit = BaseAccount.objects.filter(Q(id=14) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    salary_total = calculateAccountTypeDebit(
+        AccountType, 'Salary', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    bank_credit = BaseAccount.objects.filter(Q(id=14) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    salary_ledger = calculateAccountDebit(
+        CreateAccount, 16, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    allowance_debit = BaseAccount.objects.filter(Q(id=15) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    miscellanous_total = calculateAccountTypeDebit(
+        AccountType, 'Miscellaneous Expense', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    allowance_credit = BaseAccount.objects.filter(Q(id=15) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    miscellanous_ledger = calculateAccountDebit(
+        CreateAccount, 17, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    salary_debit = BaseAccount.objects.filter(Q(id=16) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
+    utility_total = calculateAccountTypeDebit(
+        AccountType, 'Utility Expenses', '1991-01-01', today, 'total_debit', 'total_credit')
 
-    salary_credit = BaseAccount.objects.filter(Q(id=16) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    utility_ledger = calculateAccountDebit(
+        CreateAccount, 18, '1991-01-01', today, 'total_debit', 'total_credit')
 
-    miscellaneous_debit = BaseAccount.objects.filter(Q(id=17) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
-
-    miscellaneous_credit = BaseAccount.objects.filter(Q(id=17) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
-
-    utility_debit = BaseAccount.objects.filter(Q(id=18) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_debit'))
-
-    utility_credit = BaseAccount.objects.filter(Q(id=18) & Q(accounttype_baseaccount__createaccount_account_type__transaction_account__date__range=[
-        today, today])).aggregate(sum_total=Sum('accounttype_baseaccount__createaccount_account_type__transaction_account__total_credit'))
+    asset_total = current_asset_total+fixed_asset_total
+    equity_total = capital_total
+    income_total = sales_total+misc_total
+    expense_total = oe_total+cogs_total+transportation_total+charity_total+repair_total + \
+        rental_total+govt_total+bank_total+allowance_total + \
+        salary_total+miscellanous_total+utility_total
 
     return render(request, 'reports/trial_balance.html', context={
         'current_asset_total': current_asset_total,
@@ -316,38 +313,34 @@ def trial_balance(request):
         'fixed_asset_ledger': fixed_asset_ledger,
         'capital_total': capital_total,
         'capital_ledger': capital_ledger,
-        'current_liabilities_debit': current_liabilities_debit,
-        'current_liabilities_credit': current_liabilities_credit,
-        'capital_debit': capital_debit,
-        'capital_credit': capital_credit,
-        'sales_revenue_debit': sales_revenue_debit,
-        'sales_revenue_credit': sales_revenue_credit,
-        'misc_income_debit': misc_income_debit,
-        'misc_income_credit': misc_income_credit,
-        'cogs_debit': cogs_debit,
-        'cogs_credit': cogs_credit,
-        'oe_debit': oe_debit,
-        'oe_credit': oe_credit,
-        'transportaion_debit': transportaion_debit,
-        'transportaion_credit': transportaion_credit,
-        'charity_debit': charity_debit,
-        'charity_credit': charity_credit,
-        'repair_debit': repair_debit,
-        'repair_credit': repair_credit,
-        'rental_debit': rental_debit,
-        'rental_credit': rental_credit,
-        'govt_debit': govt_debit,
-        'govt_credit': govt_credit,
-        'bank_debit': bank_debit,
-        'bank_credit': bank_credit,
-        'allowance_debit': allowance_debit,
-        'allowance_credit': allowance_credit,
-        'salary_debit': salary_debit,
-        'salary_credit': salary_credit,
-        'miscellaneous_debit': miscellaneous_debit,
-        'miscellaneous_credit': miscellaneous_credit,
-        'utility_debit': utility_debit,
-        'utility_credit': utility_credit,
+        'sales_total': sales_total,
+        'sales_ledger': sales_ledger,
+        'misc_total': misc_total,
+        'misc_ledger': misc_ledger,
+        'cogs_total': cogs_total,
+        'cogs_ledger': cogs_ledger,
+        'oe_total': oe_total,
+        'oe_ledger': oe_ledger,
+        'transportation_total': transportation_total,
+        'transportaion_ledger': transportaion_ledger,
+        'charity_total': charity_total,
+        'charity_ledger': charity_ledger,
+        'repair_total': repair_total,
+        'repair_ledger': repair_ledger,
+        'rental_total': rental_total,
+        'rental_ledger': rental_ledger,
+        'govt_total': govt_total,
+        'govt_ledger': govt_ledger,
+        'bank_total': bank_total,
+        'bank_ledger': bank_ledger,
+        'allowance_total': allowance_total,
+        'allowance_ledger': allowance_ledger,
+        'salary_total': salary_total,
+        'salary_ledger': salary_ledger,
+        'miscellanous_total': miscellanous_total,
+        'miscellanous_ledger': miscellanous_ledger,
+        'utility_total': utility_total,
+        'utility_ledger': utility_ledger,
     })
 
 

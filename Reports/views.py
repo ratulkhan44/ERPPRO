@@ -4,7 +4,7 @@ from People.models import *
 from django.db.models import Count
 from django.db.models import Sum
 from django.db.models import Q
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from django.db.models.functions import Coalesce
 
@@ -16,7 +16,25 @@ def allreports(request):
 
 
 def general_ledger(request):
-    accounts = CreateAccount.objects.all().order_by('account_name')
+    # accounts = CreateAccount.objects.all().order_by('account_name')
+
+    today = date.today()
+    fvalue = request.POST
+    # current_month = today.month
+    # current_month_first_day = date(current_month.year, current_month.month, 1)
+    # current_month_last_day = date(
+    #     current_month.year, current_month.month, 1) + relativedelta(months=1, days=-1)
+
+    accounts = CreateAccount.objects.filter(transaction_account__date__range=[
+        '1991-01-01', today]).annotate(sum_debit=(Sum('transaction_account__total_debit'))).annotate(sum_credit=(Sum('transaction_account__total_credit')))
+
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        accounts = CreateAccount.objects.filter(transaction_account__date__range=[
+            start_date, end_date]).annotate(sum_debit=(Sum('transaction_account__total_debit'))).annotate(sum_credit=(Sum('transaction_account__total_credit')))
+        return render(request, 'reports/general_ledger.html', context={'accounts': accounts})
 
     # journal_accounts = ManualJournal.objects.all()
     return render(request, 'reports/general_ledger.html', context={'accounts': accounts})
@@ -38,7 +56,32 @@ def account_transactions(request, id):
     # sum_total=Sum('accounttype_baseaccount__createaccount_account_type__total_debit'))
     # print(a)
     # abc = a.createaccount_account_type.all()
-    return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name})
+    today = date.today()
+    fvalue = request.POST
+    prev_month = today - relativedelta(months=1)
+    prev_month_last_day = date(
+        today.year, today.month, 1) - relativedelta(days=1)
+
+    next_month = today.replace(day=28) + timedelta(days=4)
+    current_month_first_day = date(today.year, today.month, 1)
+    current_month_last_day = next_month - \
+        timedelta(days=next_month.day)
+
+    accounts = Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+        current_month_first_day, current_month_last_day])).annotate(sum_debit=(Sum('total_debit'))).annotate(sum_credit=(Sum('total_credit')))
+
+    opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+        '1991-01-01', prev_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
+    closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+        '1991-01-01', current_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
+
+    if request.method == "POST":
+        accounts = Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+            '2020-10-21', today])).annotate(sum_debit=(Sum('total_debit'))).annotate(sum_credit=(Sum('total_credit')))
+
+        return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name})
+
+    return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name, 'opening': opening, 'closing': closing})
 
 
 def balance_sheet(request):
@@ -195,8 +238,6 @@ def trial_balance(request):
             start_date, end_date])).annotate(sum_total=(Coalesce(Sum('transaction_account__'+transaction_debit), 0))-(Coalesce(Sum('transaction_account__'+transaction_credit), 0)))
         return account_total
 
-    a = Transaction.objects.filter()
-
     current_asset_total = calculateAccountTypeDebit(
         AccountType, 'Current Asset', '1991-01-01', today, 'total_debit', 'total_credit')
 
@@ -302,8 +343,8 @@ def trial_balance(request):
     asset_total = current_asset_total+fixed_asset_total
     equity_total = capital_total
     income_total = sales_total+misc_total
-    expense_total = oe_total+cogs_total+transportation_total+charity_total+repair_total + \
-        rental_total+govt_total+bank_total+allowance_total + \
+    expense_total = oe_total+cogs_total+transportation_total+charity_total+repair_total +\
+        rental_total+govt_total+bank_total+allowance_total +\
         salary_total+miscellanous_total+utility_total
 
     return render(request, 'reports/trial_balance.html', context={
@@ -404,8 +445,8 @@ def profit_loss(request):
     utility_total = calculateAccountTypeDebit(
         AccountType, 'Utility Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
-    all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total + \
-        govt_total+bank_total + allowance_total + \
+    all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total +\
+        govt_total+bank_total + allowance_total +\
         salary_total + miscellaneous_total + utility_total
 
     net_profit = gross_profit - all_expenses
@@ -458,8 +499,8 @@ def profit_loss(request):
         utility_total = calculateAccountTypeDebit(
             AccountType, 'Utility Expenses', start_date, end_date, 'total_debit', 'total_credit')
 
-        all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total + \
-            govt_total+bank_total + allowance_total + \
+        all_expenses = oe_total + transportaion_total + charity_total+repair_total + rental_total +\
+            govt_total+bank_total + allowance_total +\
             salary_total + miscellaneous_total + utility_total
 
         net_profit = gross_profit - all_expenses
@@ -526,9 +567,9 @@ def demo(request):
     fixed_asset_debit = AccountType.objects.filter(id=1).aggregate(
         sum_total=Sum('createaccount_account_type__total_debit'))
 
-    current_asset_total = current_asset_debit['sum_total'] - \
+    current_asset_total = current_asset_debit['sum_total'] -\
         current_asset_credit['sum_total']
-    fixed_asset_total = fixed_asset_debit['sum_total'] - \
+    fixed_asset_total = fixed_asset_debit['sum_total'] -\
         fixed_asset_credit['sum_total']
 
     # account_types = AccountType.objects.filter(base_account=1)

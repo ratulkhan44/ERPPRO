@@ -4,6 +4,30 @@
 {% block title %}People | Company{% endblock %}
 {% block content %}
 
+<div class="card">
+    <div class="text-center">
+        <div class="mt-5">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group row d-flex justify-content-center align-items-center">
+                    <label for="start_date" class="col-sm-1 col-form-label">From:</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="start_date" value="{{fvalue.start_date}}"
+                            name="start_date" />
+                    </div>
+                    <label for="end_date" class="col-sm-1 col-form-label">To:</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="end_date" value="{{fvalue.start_date}}"
+                            name="end_date" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary my-4">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="row">
 
     <div class="col-12">
@@ -33,9 +57,9 @@
                                         {{account.account_name}}
                                     </a></td>
                                 <td>{{account.account_code}}</td>
-                                <td>{{account.total_debit}}</td>
-                                <td>{{account.total_credit}}</td>
-                                <td>{{account.total_debit|sub:account.total_credit}}</td>
+                                <td>{{account.sum_debit}}</td>
+                                <td>{{account.sum_credit}}</td>
+                                <td>{{account.sum_debit|sub:account.sum_credit|abs}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

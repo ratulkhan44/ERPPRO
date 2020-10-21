@@ -22,28 +22,35 @@
                         <thead class="bgd-gray-1">
                             <tr>
                                 <th>Date</th>
-                                <th>Voucher No</th>
-                                <th>Particular</th>
-                                <th>For/From</th>
-                                <th>By</th>
+                                <th>Account</th>
+                                <th>Transaction Type</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td colspan="5">Opening Balance</td>
+                                <td>{{opening}}</td>
+                            </tr>
                             {% for account in accounts %}
                             <tr>
-                                <td>{{account.voucher_date}}</td>
-                                <td>{{account.voucher_no}}</td>
-                                <td>{{account.particular}}</td>
-                                <td>{{account.people_for_from}}</td>
-                                <td>{{account.people_by}}</td>
-                                <td>{{account.debit}}</td>
-                                <td>{{account.credit}}</td>
+                                <td>{{account.date}}</td>
+                                <td>{{account_name.account_name}}</td>
+                                <td>{{account.trnsaction_type}}</td>
+                                <td>{{account.sum_debit}}</td>
+                                <td>{{account.sum_credit}}</td>
+                                <td>{{account.sum_debit|sub:account.sum_credit|abs}}</td>
                             </tr>
                             {% endfor %}
-                        </tbody>
+                            <tr>
+                                <td colspan="5">Closing Balance</td>
 
+                                <td>{{closing}}</td>
+                            </tr>
+                        </tbody>
+                        {{opening.sum_total}}
                     </table>
                 </div>
             </div>

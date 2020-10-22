@@ -69,19 +69,50 @@ def account_transactions(request, id):
 
     accounts = Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
         current_month_first_day, current_month_last_day])).annotate(sum_debit=(Sum('total_debit'))).annotate(sum_credit=(Sum('total_credit')))
-
-    opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
-        '1991-01-01', prev_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
-    closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
-        '1991-01-01', current_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
+    exist = CreateAccount.objects.filter(Q(id=id) & (
+        Q(account_type_id=3) | Q(account_type_id=4) | Q(account_type_id=5) | Q(account_type_id=6)))
+    if exist:
+        opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+            '1991-01-01', prev_month_last_day])).aggregate(sum_total=(Sum('total_credit'))-(Sum('total_debit')))['sum_total']) or 0
+        closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+            '1991-01-01', current_month_last_day])).aggregate(sum_total=(Sum('total_credit'))-(Sum('total_debit')))['sum_total']) or 0
+    else:
+        opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+            '1991-01-01', prev_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
+        closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+            '1991-01-01', current_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
 
     if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        str_start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        post_next_month = str_start_date.replace(day=28) + timedelta(days=4)
+        post_current_month_first_day = date(
+            str_start_date.year, str_start_date.month, 1)
+        post_current_month_last_day = post_next_month - \
+            timedelta(days=post_next_month.day)
+
+        post_prev_month = str_start_date - relativedelta(months=1)
+        post_prev_month_last_day = date(
+            str_start_date.year, str_start_date.month, 1) - relativedelta(days=1)
         accounts = Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
-            '2020-10-21', today])).annotate(sum_debit=(Sum('total_debit'))).annotate(sum_credit=(Sum('total_credit')))
+            start_date, end_date])).annotate(sum_debit=(Sum('total_debit'))).annotate(sum_credit=(Sum('total_credit')))
+        exist = CreateAccount.objects.filter(Q(id=id) & (
+            Q(account_type_id=3) | Q(account_type_id=4) | Q(account_type_id=5) | Q(account_type_id=6)))
+        if exist:
+            opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+                '1991-01-01', post_prev_month_last_day])).aggregate(sum_total=(Sum('total_credit'))-(Sum('total_debit')))['sum_total']) or 0
+            closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+                '1991-01-01', end_date])).aggregate(sum_total=(Sum('total_credit'))-(Sum('total_debit')))['sum_total']) or 0
+        else:
+            opening = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+                '1991-01-01', post_prev_month_last_day])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
+            closing = (Transaction.objects.filter(Q(account_id=id) & Q(date__range=[
+                '1991-01-01', end_date])).aggregate(sum_total=(Sum('total_debit'))-(Sum('total_credit')))['sum_total']) or 0
 
-        return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name})
+        return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name, 'opening': opening, 'closing': closing, 'exist': exist, 'start_date': start_date, 'end_date': end_date})
 
-    return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name, 'opening': opening, 'closing': closing})
+    return render(request, 'reports/account_transactions.html', context={'accounts': accounts, 'account_name': account_name, 'opening': opening, 'closing': closing, 'exist': exist, 'start_date': current_month_first_day, 'end_date': current_month_last_day})
 
 
 def balance_sheet(request):

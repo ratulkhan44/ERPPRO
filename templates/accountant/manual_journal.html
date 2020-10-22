@@ -147,6 +147,7 @@
     {% endblock %}
     {% block js_block %}
     <script>
+
         var vm = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',
@@ -222,6 +223,8 @@
                         }]
                 },
 
+
+
             },
             computed: {
                 calculateDebitTotal: function () {
@@ -239,7 +242,11 @@
                 }
             },
 
+
         });
+
+
+
     </script>
     <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'js/components/select2-init.js' %}"></script>

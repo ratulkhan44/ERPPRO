@@ -3,14 +3,37 @@
 {% load mathfilters %}
 {% block title %}People | Company{% endblock %}
 {% block content %}
-
+<div class="card">
+    <div class="text-center">
+        <div class="mt-5">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group row d-flex justify-content-center align-items-center">
+                    <label for="start_date" class="col-sm-1 col-form-label">From:</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="start_date" value="{{fvalue.start_date}}"
+                            name="start_date" />
+                    </div>
+                    <label for="end_date" class="col-sm-1 col-form-label">To:</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" id="end_date" value="{{fvalue.start_date}}"
+                            name="end_date" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary my-4">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="row">
 
     <div class="col-12">
         <div class="card ">
             <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
                 <div class="">
-                    <h6>Account Transaction</h6>
+                    <h6>Account Transaction (From {{start_date}} To {{end_date}})</h6>
                 </div>
             </div>
             <div class="text-center mt-4">
@@ -30,10 +53,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% if exist and opening > 0 %}
                             <tr>
-                                <td colspan="5">Opening Balance</td>
-                                <td>{{opening}}</td>
+                                <td colspan="4">Opening Balance</td>
+
+                                <td>{{opening|abs}}</td>
+
                             </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3">Opening Balance</td>
+
+                                <td>{{opening|abs}}</td>
+                            </tr>
+                            {% endif %}
                             {% for account in accounts %}
                             <tr>
                                 <td>{{account.date}}</td>
@@ -44,13 +77,21 @@
                                 <td>{{account.sum_debit|sub:account.sum_credit|abs}}</td>
                             </tr>
                             {% endfor %}
+                            {% if exist and closing > 0 %}
                             <tr>
-                                <td colspan="5">Closing Balance</td>
+                                <td colspan="4">Closing Balance</td>
 
-                                <td>{{closing}}</td>
+                                <td>{{closing|abs}}</td>
                             </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3">Closing Balance</td>
+
+                                <td>{{closing|abs}}</td>
+
+                            </tr>
+                            {% endif %}
                         </tbody>
-                        {{opening.sum_total}}
                     </table>
                 </div>
             </div>

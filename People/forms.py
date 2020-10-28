@@ -36,7 +36,7 @@ class PeopleForm(forms.ModelForm):
     company = forms.ModelChoiceField(queryset=Company.objects.all(
     ), required=False, widget=forms.Select(attrs={'class': 'form-control company', 'id': 'company_name'}))
     department = forms.ModelChoiceField(queryset=Department.objects.all(
-    ), required=False, widget=forms.Select(attrs={'class': 'form-control', 'id': 'department_name'}))
+    ), required=False, widget=forms.Select(attrs={'class': 'form-control department', 'id': 'department_name'}))
     contact = forms.IntegerField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'contact'}))
     email = forms.EmailField(required=False, widget=forms.TextInput(
@@ -47,11 +47,11 @@ class PeopleForm(forms.ModelForm):
         attrs={'type': 'date', 'class': 'form-control', 'id': 'dob'}))
     marital_status = forms.ChoiceField(required=False, choices=MARITAL_CHOICES, widget=forms.Select(
         attrs={'class': 'form-control', 'id': 'marital_status'}))
-    nid = forms.IntegerField(required=False, widget=forms.TextInput(
+    nid = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'nid'}))
     passport = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'passport'}))
-    tracking = forms.IntegerField(required=False, widget=forms.TextInput(
+    tracking = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'tracking'}))
     address = forms.Textarea()
 

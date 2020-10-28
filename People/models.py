@@ -24,6 +24,7 @@ class Department(models.Model):
 
 
 BLOOD_CHOICES = (
+    ('', '--Select--'),
     ('A+', 'A+'),
     ('O+', 'O+'),
     ('B+', 'B+'),
@@ -35,31 +36,31 @@ BLOOD_CHOICES = (
 )
 
 MARITAL_CHOICES = (
+    ('', '--Select--'),
     ('Single', 'Single'),
     ('Married', 'Married')
 )
 
 
 class People(models.Model):
-    name = models.CharField(max_length=254, unique=True)
+    name = models.CharField(max_length=254,)
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name='people_company', blank=True, null=True)
     department = models.ForeignKey(
         Department, on_delete=models.CASCADE, related_name='people_department', blank=True, null=True)
-    contact = models.IntegerField(unique=True, blank=True)
+    contact = models.BigIntegerField(null=True, blank=True)
     image = models.ImageField(upload_to="people_image/", null=True, blank=True)
     email = models.EmailField(
-        max_length=254, unique=True, blank=True, null=True)
+        max_length=254, blank=True, null=True)
     blood_group = models.CharField(
         max_length=50, choices=BLOOD_CHOICES, blank=True, null=True)
     marital_status = models.CharField(
         max_length=50, choices=MARITAL_CHOICES, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    nid = models.BigIntegerField(unique=True, blank=True)
-    passport = models.CharField(
-        max_length=254, unique=True, blank=True, null=True)
-    tracking = models.BigIntegerField(unique=True, blank=True)
-    address = models.TextField(blank=True)
+    nid = models.CharField(max_length=254, null=True, blank=True)
+    passport = models.CharField(max_length=254, blank=True, null=True)
+    tracking = models.CharField(max_length=254, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name

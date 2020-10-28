@@ -27,7 +27,9 @@
                             <label for="name" class="col-md-2 col-form-label">Name : </label>
                             <div class="form-group col-md-4">
                                 {{form.name}}
+                                <div class="invalid-name-feedback text-danger" style="display: none;"></div>
                             </div>
+                            
                             <label for="company" class="col-md-2 col-form-label">Company : </label>
                             <div class="form-group col-md-4">
                                 {{form.company}}
@@ -42,6 +44,7 @@
                             <label for="contact" class="col-md-2 col-form-label">Mobile No : </label>
                             <div class="form-group col-md-4">
                                 {{form.contact}}
+                                <div class="invalid-contact-feedback text-danger" ></div>
                             </div>
                         </div>
 
@@ -49,6 +52,7 @@
                             <label for="email" class="col-md-2 col-form-label">Email : </label>
                             <div class="form-group col-md-4">
                                 {{form.email}}
+                                <div class="invalid-email-feedback text-danger"></div>
                             </div>
                             <label for="blood_group" class="col-md-2 col-form-label">Blood Group : </label>
                             <div class="form-group col-md-4">
@@ -74,10 +78,12 @@
                             <label for="nid" class="col-md-2 col-form-label">NID NO : </label>
                             <div class="form-group col-md-4">
                                 {{form.nid}}
+                                <div class="invalid-nid-feedback text-danger"></div>
                             </div>
                             <label for="passport" class="col-md-2 col-form-label">Passport NO : </label>
                             <div class="form-group col-md-4">
                                 {{form.passport}}
+                                <div class="invalid-passport-feedback text-danger"></div>
                             </div>
 
                         </div>
@@ -86,6 +92,7 @@
                             <label for="tracking" class="col-md-2 col-form-label">Tracking NO : </label>
                             <div class="form-group col-md-4">
                                 {{form.tracking}}
+                                <div class="invalid-tracking-feedback text-danger"></div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -94,7 +101,7 @@
                                 {{form.image}}
                             </div> -->
                             <div class="form-group">
-                                <label for="exampleFormControlFile1">Example file input</label>
+                                <label for="exampleFormControlFile1">Image:</label>
 
                                 {{form.image}}
                             </div>
@@ -113,4 +120,33 @@
             </div>
         </div>
     </div>
+    {% endblock %}
+
+    {% block js_block%}
+    <script src="{% static 'js/components/people_validation.js' %}"></script>
+    
+    
+    <script>
+    $('.company').on('change',function(){
+        console.log("xyz");
+        var companyID = $('option:selected',this).val();
+        console.log(companyID);
+        var companyURL = 'getdepartments/' + companyID;
+        console.log(companyURL);
+        $.ajax({
+            url: companyURL,
+            type: "GET",
+            success: function (data) {
+                $('#department_name').find('option').remove();
+                $('#department_name').append("<option>Select Department</option>");
+                $(data).each(function(index, value) {
+                    console.log(value);
+                    $('#department_name').append("<option value="+ value.pk +">"+ value.fields.department_name +"</option>")
+                });
+            }
+        });
+
+    });
+    </script>
+
     {% endblock %}

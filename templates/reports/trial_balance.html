@@ -53,7 +53,7 @@
                                             {{account.account_name}}</span></a>
                                 </td>
                                 {% if account.sum_total > 0 %}
-                                <td>
+                                <td v-model="a">
                                     <span class="mgn-l-30">
                                         {{account.sum_total|abs}}
                                     </span>

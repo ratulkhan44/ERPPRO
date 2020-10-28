@@ -147,7 +147,6 @@
     {% endblock %}
     {% block js_block %}
     <script>
-
         var vm = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',
@@ -244,10 +243,8 @@
 
 
         });
-
-
-
     </script>
+    <script src="{% static 'js/components/journal-init.js' %}"></script>
     <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'js/components/select2-init.js' %}"></script>
     {% endblock %}

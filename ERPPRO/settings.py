@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'Accountant',
     'People',
     'Reports',
-    'mathfilters'
+    'mathfilters',
+    'Products'
 ]
 
 MIDDLEWARE = [

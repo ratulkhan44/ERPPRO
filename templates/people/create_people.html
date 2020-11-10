@@ -29,7 +29,7 @@
                                 {{form.name}}
                                 <div class="invalid-name-feedback text-danger" style="display: none;"></div>
                             </div>
-                            
+
                             <label for="company" class="col-md-2 col-form-label">Company : </label>
                             <div class="form-group col-md-4">
                                 {{form.company}}
@@ -44,7 +44,7 @@
                             <label for="contact" class="col-md-2 col-form-label">Mobile No : </label>
                             <div class="form-group col-md-4">
                                 {{form.contact}}
-                                <div class="invalid-contact-feedback text-danger" ></div>
+                                <div class="invalid-contact-feedback text-danger"></div>
                             </div>
                         </div>
 
@@ -124,29 +124,29 @@
 
     {% block js_block%}
     <script src="{% static 'js/components/people_validation.js' %}"></script>
-    
-    
-    <script>
-    $('.company').on('change',function(){
-        console.log("xyz");
-        var companyID = $('option:selected',this).val();
-        console.log(companyID);
-        var companyURL = 'getdepartments/' + companyID;
-        console.log(companyURL);
-        $.ajax({
-            url: companyURL,
-            type: "GET",
-            success: function (data) {
-                $('#department_name').find('option').remove();
-                $('#department_name').append("<option>Select Department</option>");
-                $(data).each(function(index, value) {
-                    console.log(value);
-                    $('#department_name').append("<option value="+ value.pk +">"+ value.fields.department_name +"</option>")
-                });
-            }
-        });
 
-    });
+
+    <script>
+        $('.company').on('change', function () {
+            console.log("xyz");
+            var companyID = $('option:selected', this).val();
+            console.log(companyID);
+            var companyURL = 'getdepartments/' + companyID;
+            console.log(companyURL);
+            $.ajax({
+                url: companyURL,
+                type: "GET",
+                success: function (data) {
+                    $('#department_name').find('option').remove();
+                    $('#department_name').append("<option>Select Department</option>");
+                    $(data).each(function (index, value) {
+                        console.log(value);
+                        $('#department_name').append("<option value=" + value.pk + ">" + value.fields.department_name + "</option>")
+                    });
+                }
+            });
+
+        });
     </script>
 
     {% endblock %}

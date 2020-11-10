@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'People',
     'Reports',
     'mathfilters',
-    'Products'
+    'Products',
+    'Purchases',
+    'Expense'
 ]
 
 MIDDLEWARE = [

@@ -23,7 +23,7 @@
             </div>
 
             <div id="app" class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
-                <div class="pdn-sm-55 pdn-15 bdr">
+                <div class="pdn-sm-55 pdn-15 bdr" id="app">
                     <form action="">
                         <div class="form-group row">
                             <label for="product_name" class="col-md-2 col-form-label">Name : </label>
@@ -59,47 +59,44 @@
                                     <div class="card-body">
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox checkbox-primary m-2">
-                                                <input type="checkbox" class="custom-control-input" id="sales_info">
+                                                <input type="checkbox" class="custom-control-input" id="sales_info"
+                                                    v-model='sales_info'>
                                                 <label class="custom-control-label" for="sales_info">Sales
                                                     Information</label>
                                             </div>
                                         </div>
                                         <hr>
                                         <br>
-                                        <div class="form-group row">
-                                            <label for="selling_price" class="col-md-4 col-form-label">Selling Price :
-                                            </label>
-                                            <div class="form-group col-md-8">
-                                                <input type="text" class="form-control" id="selling_price"
-                                                    name="selling_price" required />
+                                        <div class="" v-if='sales_info'>
+                                            <div class="form-group row">
+                                                <label for="selling_price" class="col-md-4 col-form-label">Selling Price
+                                                    :
+                                                </label>
+                                                <div class="form-group col-md-8">
+                                                    <input type="text" class="form-control" id="selling_price"
+                                                        name="selling_price" required />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="product_unit" class="col-md-4 col-form-label">Account : </label>
-                                            <div class="form-group col-md-8">
-                                                <select name="product_unit" class="form-control" required>
-                                                    <option value="">Select Account</option>
-                                                    <option value="box">box</option>
-                                                    <option value="cm">cm</option>
-                                                    <option value="dz">dz</option>
-                                                    <option value="ft">ft</option>
-                                                    <option value="g">g</option>
-                                                    <option value="in">in</option>
-                                                    <option value="kg">kg</option>
-                                                    <option value="km">km</option>
-                                                    <option value="lb">lb</option>
-                                                    <option value="mg">mg</option>
-                                                    <option value="m">m</option>
-                                                    <option value="pcs">pcs</option>
-                                                </select>
+                                            <div class="form-group row">
+                                                <label for="product_unit" class="col-md-4 col-form-label">Account :
+                                                </label>
+                                                <div class="form-group col-md-8">
+                                                    <select name="product_unit" class="form-control" required>
+                                                        <option value="">Select Account</option>
+                                                        {% for account in sales_accounts %}
+                                                        <option value="{{account.id}}">{{account}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="selling_description" class="col-md-4 col-form-label">Description
-                                                : </label>
-                                            <div class="form-group col-md-8">
-                                                <textarea class="form-control" name="selling_description"
-                                                    id="selling_description" rows="4"></textarea>
+                                            <div class="form-group row">
+                                                <label for="selling_description"
+                                                    class="col-md-4 col-form-label">Description
+                                                    : </label>
+                                                <div class="form-group col-md-8">
+                                                    <textarea class="form-control" name="selling_description"
+                                                        id="selling_description" rows="4"></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -110,48 +107,44 @@
                                     <div class="card-body">
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox checkbox-primary m-2">
-                                                <input type="checkbox" class="custom-control-input" id="purchase_info">
+                                                <input type="checkbox" class="custom-control-input" id="purchase_info"
+                                                    v-model='purchase_info'>
                                                 <label class="custom-control-label" for="purchase_info">Purchase
                                                     Information</label>
                                             </div>
                                         </div>
                                         <hr>
                                         <br>
-                                        <div class="form-group row">
-                                            <label for="purchase_price" class="col-md-4 col-form-label">Purchase Price :
-                                            </label>
-                                            <div class="form-group col-md-8">
-                                                <input type="text" class="form-control" id="purchase_price"
-                                                    name="purchase_price" required />
+                                        <div class="" v-if='purchase_info'>
+                                            <div class="form-group row">
+                                                <label for="purchase_price" class="col-md-4 col-form-label">Purchase
+                                                    Price :
+                                                </label>
+                                                <div class="form-group col-md-8">
+                                                    <input type="text" class="form-control" id="purchase_price"
+                                                        name="purchase_price" required />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="product_unit" class="col-md-4 col-form-label">Account : </label>
-                                            <div class="form-group col-md-8">
-                                                <select name="product_unit" class="form-control" required>
-                                                    <option value="">Select Account</option>
-                                                    <option value="box">box</option>
-                                                    <option value="cm">cm</option>
-                                                    <option value="dz">dz</option>
-                                                    <option value="ft">ft</option>
-                                                    <option value="g">g</option>
-                                                    <option value="in">in</option>
-                                                    <option value="kg">kg</option>
-                                                    <option value="km">km</option>
-                                                    <option value="lb">lb</option>
-                                                    <option value="mg">mg</option>
-                                                    <option value="m">m</option>
-                                                    <option value="pcs">pcs</option>
-                                                </select>
+                                            <div class="form-group row">
+                                                <label for="product_unit" class="col-md-4 col-form-label">Account :
+                                                </label>
+                                                <div class="form-group col-md-8">
+                                                    <select name="product_unit" class="form-control" required>
+                                                        <option value="">Select Account</option>
+                                                        {% for account in purchase_accounts %}
+                                                        <option value="{{account.id}}">{{account}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="purchase_description"
-                                                class="col-md-4 col-form-label">Description
-                                                : </label>
-                                            <div class="form-group col-md-8">
-                                                <textarea class="form-control" name="purchase_description"
-                                                    id="purchase_description" rows="4"></textarea>
+                                            <div class="form-group row">
+                                                <label for="purchase_description"
+                                                    class="col-md-4 col-form-label">Description
+                                                    : </label>
+                                                <div class="form-group col-md-8">
+                                                    <textarea class="form-control" name="purchase_description"
+                                                        id="purchase_description" rows="4"></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -159,53 +152,48 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
+                        <div class="row" v-if='sales_info && purchase_info'>
                             <div class="col-md-12">
                                 <div class="card pdn-10">
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox checkbox-primary m-2">
-                                            <input type="checkbox" class="custom-control-input" id="sales_info" checked>
-                                            <label class="custom-control-label" for="checkbox1">Track Inventory for this
+                                            <input type="checkbox" class="custom-control-input" id="invevtory_info"
+                                                v-model='invevtory_info'>
+                                            <label class="custom-control-label" for="invevtory_info">Track Inventory for
+                                                this
                                                 Product</label>
                                             <br>
                                             <small>You cannot enable/disable inventory tracking once you've created
                                                 transactions for this item</small>
                                         </div>
                                     </div>
-                                    <div class="form-group row pdn-l-10">
-                                        <label for="product_unit" class="col-md-2 col-form-label">Account : </label>
-                                        <div class="form-group col-md-4">
-                                            <select name="product_unit" class="form-control" required>
-                                                <option value="">Select Account</option>
-                                                <option value="box">box</option>
-                                                <option value="cm">cm</option>
-                                                <option value="dz">dz</option>
-                                                <option value="ft">ft</option>
-                                                <option value="g">g</option>
-                                                <option value="in">in</option>
-                                                <option value="kg">kg</option>
-                                                <option value="km">km</option>
-                                                <option value="lb">lb</option>
-                                                <option value="mg">mg</option>
-                                                <option value="m">m</option>
-                                                <option value="pcs">pcs</option>
-                                            </select>
+                                    <div class="" v-if='invevtory_info'>
+                                        <div class="form-group row pdn-l-10">
+                                            <label for="product_unit" class="col-md-2 col-form-label">Account : </label>
+                                            <div class="form-group col-md-4">
+                                                <select name="product_unit" class="form-control" required>
+                                                    <option value="">Select Account</option>
+                                                    <option value="{{inventory_account.id}}">{{inventory_account}}
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row pdn-l-10">
-                                        <label for="opening_stock" class="col-md-2 col-form-label">Opening Stock:
-                                        </label>
-                                        <div class="form-group col-md-4">
-                                            <input type="text" class="form-control" id="opening_stock"
-                                                name="opening_stock" required />
+                                        <div class="form-group row pdn-l-10">
+                                            <label for="opening_stock" class="col-md-2 col-form-label">Opening Stock:
+                                            </label>
+                                            <div class="form-group col-md-4">
+                                                <input type="text" class="form-control" id="opening_stock"
+                                                    name="opening_stock" required />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row pdn-l-10">
-                                        <label for="stock_unit" class="col-md-2 col-form-label">Opening Stock Per Unit :
-                                        </label>
-                                        <div class="form-group col-md-4">
-                                            <input type="text" class="form-control" id="stock_unit" name="stock_unit"
-                                                required />
+                                        <div class="form-group row pdn-l-10">
+                                            <label for="stock_unit" class="col-md-2 col-form-label">Opening Stock Per
+                                                Unit :
+                                            </label>
+                                            <div class="form-group col-md-4">
+                                                <input type="text" class="form-control" id="stock_unit"
+                                                    name="stock_unit" required />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -219,11 +207,6 @@
                             </div>
                         </div>
                     </form>
-                    {% for account in accounts %}
-                    <p>{{account}}</p>
-                    {% endfor %}
-
-
                 </div>
             </div>
         </div>
@@ -232,4 +215,19 @@
     {% block js_block %}
     <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'js/components/select2-init.js' %}"></script>
+    <script>
+        var vm = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                sales_info: true,
+                purchase_info: true,
+                invevtory_info: true
+            },
+            methods: {
+            },
+            computed: {
+            },
+        });
+    </script>
     {% endblock %}

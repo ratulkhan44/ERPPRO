@@ -1,0 +1,77 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}User | User Login{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="container">
+    <div id="app">
+        <div class="login-form">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="main-logo text-center my-3">
+                        <img src="assets/images/logo-color.svg" alt="madol">
+                    </div>
+                    <h6 class="text-center mb-3">Sign in to your account</h6>
+                    <form action="{% url 'User:user_login' %}" method="POST" enctype="multipart/form-data"
+                        autocomplete="off">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="username" id="username"
+                                placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" id="password"
+                                placeholder="Password">
+                        </div>
+                        <div class="row form-group mt-3">
+                            <div class="col-6">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                    <label class="custom-control-label" for="customCheck1">Remember Me!</label>
+                                </div>
+                            </div>
+                            <div class="col-6 text-right">
+                                <a href="#" class="text-forgot"><i class="icon-lock"></i> Forgot password?</a>
+                            </div>
+                        </div>
+                        <div class="form-group my-3 row">
+                            <div class="col-12 text-right">
+                                <input type="submit" class="btn btn-primary btn-block" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="form-group mb-0 mt-2">
+                        <div class="col-12 text-center text-muted text-signup">
+                            Don't have an account? <a href="{% url 'User:create_user' %}" class="text-info">Sign
+                                up</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Placed at the end of the document so the pages load faster -->
+<!-- <script src="assets/js/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/vendor/bootstrap/bootstrap.bundle.min.js"></script> -->
+
+<!--Plugin -->
+
+{% endblock %}
+<!-- {% block js_block %}
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    {% endblock %} -->

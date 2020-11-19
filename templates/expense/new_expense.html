@@ -1,0 +1,106 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Expense | New Expense{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40">
+                <h6>New Expense +</h6>
+            </div>
+
+            <div id="app" class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="pdn-sm-55 pdn-15 bdr bgd-gray-1">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="expense_date" class="col-md-2 col-form-label">Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="expense_date" name="expense_date"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paid_account" class="col-md-2 col-form-label">Paid Throgh: </label>
+                            <div class="form-group col-md-4">
+                                <select name="paid_account" class="form-control" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for account in paid_accounts %}
+                                    <option value="{{account.id}}">{{account.account_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paid_account" class="col-md-2 col-form-label">Expense Account: </label>
+                            <div class="form-group col-md-4">
+                                <select name="expense_account" class="form-control" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for account in expense_accounts %}
+                                    <option value="{{account.id}}">{{account.account_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paid_account" class="col-md-2 col-form-label">Particular: </label>
+                            <div class="form-group col-md-4">
+                                <textarea class="form-control" name="particular" rows="3"
+                                    placeholder="Particular"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paid_account" class="col-md-2 col-form-label">For: </label>
+                            <div class="form-group col-md-4">
+                                <select name="people_for" class="form-control" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for people in peoples %}
+                                    <option value="{{people.id}}">{{people.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paid_account" class="col-md-2 col-form-label">By: </label>
+                            <div class="form-group col-md-4">
+                                <select name="people_by" class="form-control" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for people in peoples %}
+                                    <option value="{{people.id}}">{{people.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="amount" class="col-md-2 col-form-label">Amount: </label>
+                            <div class="form-group col-md-4">
+                                <input type="text" class="form-control" id="amount" name="amount" required />
+                            </div>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="expense_image" name='expense_image'>
+                            <label class="custom-file-label" for="expense_image">Choose file</label>
+                        </div>
+
+                        <div>
+                            <div class="mgn-t-45">
+                                <input class="btn btn-primary-soft mgn-l-20" type="submit" value="Save">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

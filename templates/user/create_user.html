@@ -1,0 +1,185 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}User | Create User{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40">
+                <h6>Add New User</h6>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="username" class="col-md-2 col-form-label">Username : </label>
+                            <div class="form-group col-md-4">
+                                {{form.username}}
+                                <div class="invalid-name-feedback text-danger" style="display: none;"></div>
+                            </div>
+
+                            <label for="full_name" class="col-md-2 col-form-label">Full Name : </label>
+                            <div class="form-group col-md-4">
+                                {{form.full_name}}
+                                <div class="invalid-name-feedback text-danger" style="display: none;"></div>
+                            </div>
+
+                            <label for="user_role" class="col-md-2 col-form-label">User Role : </label>
+                            <div class="form-group col-md-4">
+                                {{form.user_role}}
+                                <div class="invalid-name-feedback text-danger" style="display: none;"></div>
+                            </div>
+
+                            <label for="company" class="col-md-2 col-form-label">Company : </label>
+                            <div class="form-group col-md-4">
+                                {{form.company}}
+                            </div>
+
+                            <label for="job_title" class="col-md-2 col-form-label">Job Title : </label>
+                            <div class="form-group col-md-4">
+                                {{form.job_title}}
+                            </div>
+
+                            <label for="work_location" class="col-md-2 col-form-label">Work Location : </label>
+                            <div class="form-group col-md-4">
+                                {{form.work_location}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="department" class="col-md-2 col-form-label">Department : </label>
+                            <div class="form-group col-md-4">
+                                {{form.department}}
+                            </div>
+
+                            <label for="contact_no" class="col-md-2 col-form-label">Mobile No : </label>
+                            <div class="form-group col-md-4">
+                                {{form.contact_no}}
+                                <div class="invalid-contact-feedback text-danger"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-2 col-form-label">Email : </label>
+                            <div class="form-group col-md-4">
+                                {{form.email}}
+                                <div class="invalid-email-feedback text-danger"></div>
+                            </div>
+                            <label for="blood_group" class="col-md-2 col-form-label">Blood Group : </label>
+                            <div class="form-group col-md-4">
+                                {{form.blood_group}}
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="dob" class="col-md-2 col-form-label">Date Of Birth : </label>
+                            <div class="form-group col-md-4">
+                                {{form.dob}}
+                            </div>
+                            <label for="marital_status" class="col-md-2 col-form-label">Marital Status : </label>
+                            <div class="form-group col-md-4">
+                                {{form.marital_status}}
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="nid" class="col-md-2 col-form-label">NID NO : </label>
+                            <div class="form-group col-md-4">
+                                {{form.nid}}
+                                <div class="invalid-nid-feedback text-danger"></div>
+                            </div>
+                            <label for="passport" class="col-md-2 col-form-label">Passport NO : </label>
+                            <div class="form-group col-md-4">
+                                {{form.passport}}
+                                <div class="invalid-passport-feedback text-danger"></div>
+                            </div>
+                            <label for="password1" class="col-md-2 col-form-label">Password : </label>
+                            <div class="form-group col-md-4">
+                                {{form.password1}}
+                                <div class="invalid-passport-feedback text-danger"></div>
+                            </div>
+                            <label for="password2" class="col-md-2 col-form-label">Retype Password : </label>
+                            <div class="form-group col-md-4">
+                                {{form.password2}}
+                                <div class="invalid-passport-feedback text-danger"></div>
+                            </div>
+
+                        </div>
+
+                        <!-- <div class="form-group row">
+                            <label for="tracking" class="col-md-2 col-form-label">Tracking NO : </label>
+                            <div class="form-group col-md-4">
+                                {{form.tracking}}
+                                <div class="invalid-tracking-feedback text-danger"></div>
+                            </div>
+                        </div> -->
+                        <div class="form-group row">
+                            <!-- <div class="form-group">
+                                <label for="exampleFormControlFile1">Example file input</label>
+                                {{form.image}}
+                            </div> -->
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Profile Picture:</label>
+
+                                {{form.profile_pic}}
+                            </div>
+                            <!-- <label for="address" class="col-form-label col-md-2 mgn-t-20">
+                                Address :
+                            </label> -->
+                            <!-- <div class="form-group col-md-4">
+                                {{form.address}}
+                            </div> -->
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-3 my-4">
+                            Save
+                        </button>
+                    </form>
+                    {{form.errors}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block js_block%}
+    <!-- <script src="{% static 'js/components/people_validation.js' %}"></script> -->
+
+
+    <script>
+        $('.company').on('change', function () {
+            console.log("xyz");
+            var companyID = $('option:selected', this).val();
+            console.log(companyID);
+            var companyURL = 'getdepartments/' + companyID;
+            console.log(companyURL);
+            $.ajax({
+                url: companyURL,
+                type: "GET",
+                success: function (data) {
+                    $('#department_name').find('option').remove();
+                    $('#department_name').append("<option>Select Department</option>");
+                    $(data).each(function (index, value) {
+                        console.log(value);
+                        $('#department_name').append("<option value=" + value.pk + ">" + value.fields.department_name + "</option>")
+                    });
+                }
+            });
+
+        });
+    </script>
+
+    {% endblock %}

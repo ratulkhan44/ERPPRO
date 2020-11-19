@@ -8,6 +8,7 @@ from Reports import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('user/', include('User.urls')),
     path('sales/', include('Sales.urls')),
     path('accountant/', include('Accountant.urls')),
     path('purchases/', include('Purchases.urls')),

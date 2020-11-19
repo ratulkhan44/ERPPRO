@@ -55,13 +55,18 @@
             </a>
             <ul>
               <li>
-                <a href="{% url 'Expense:expense_requisition' %}">
-                  Requisition
+                <a href="{% url 'Expense:all_expense' %}">
+                  All Expense
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Expense:new_expense' %}">
+                  New Expense +
                 </a>
               </li>
               <li>
                 <a href="">
-                  Expenses
+                  Recurring Expense
                 </a>
               </li>
             </ul>
@@ -101,11 +106,6 @@
               <li>
                 <a href="">
                   Vendor
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  Expenses
                 </a>
               </li>
               <li>
@@ -203,6 +203,9 @@
               </li>
             </ul>
           </li>
+
+          <!--User-->
+
 
           <li class="nav-title">
             Reports

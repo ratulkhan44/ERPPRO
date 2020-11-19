@@ -5,6 +5,8 @@ from django.urls import path
 app_name = 'Expense'
 
 urlpatterns = [
-    path('expense-requisition/', views.expense_requisition,
-         name='expense_requisition'),
+    path('new-expense/', views.new_expense,
+         name='new_expense'),
+    path('all-expense/', views.all_expense,
+         name='all_expense'),
 ]

@@ -30,6 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL= 'User.CustomUser'
+
 
 # Application definition
 
@@ -47,7 +49,8 @@ INSTALLED_APPS = [
     'mathfilters',
     'Products',
     'Purchases',
-    'Expense'
+    'Expense',
+    'User'
 ]
 
 MIDDLEWARE = [

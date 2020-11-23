@@ -24,7 +24,7 @@ def new_expense(request):
         people_by=request.POST.get('people_by')
         expense_image=request.FILES['expense_image']
         amount=request.POST.get('amount')
-        user_id=1
+        user_id=request.user.id
 
 
         Expense.objects.create(expense_date=expense_date, paid_account_id=paid_account, expense_account_id=expense_account, particular=particular,

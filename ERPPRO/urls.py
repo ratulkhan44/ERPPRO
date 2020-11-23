@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
-from Sales import views
-from People import views
-from Reports import views
+from User import views
 
 urlpatterns = [
+    path('',views.user_login, name='user_login'),
+    path('user-logout/', views.user_logout, name='user_logout'),
+    path('permission-denied/',views.permission_denied,name='permission_denied'),
     path('admin/', admin.site.urls),
     path('user/', include('User.urls')),
     path('sales/', include('Sales.urls')),

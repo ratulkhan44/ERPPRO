@@ -1,0 +1,73 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Expense | All Expense{% endblock %}
+{% block content %}
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>All Expense List</h6>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Expense Date</th>
+                                <th>Particular</th>
+                                <th>Attch File</th>
+                                <th>Expense Account</th>
+                                <th>Paid Account</th>
+                                <th>For</th>
+                                <th>By</th>
+                                <th>Amount</th>
+                                <th>Created By</th>
+                                <th>Approved By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td>{{expense.expense_date}}</td>
+                                <td>{{expense.particular}}</td>
+                                <td>
+                                    <img src="/media/{{expense.expense_image}}" width="50px" alt="">
+                                </td>
+                                <td>{{expense.expense_account}}</td>
+                                <td>{{expense.paid_account}}</td>
+                                <td>{{expense.people_for}}</td>
+                                <td>{{expense.people_by}}</td>
+                                <td>{{expense.amount}}</td>
+                                <td>{{expense.user}}</td>
+                                <td>{{expense.approved_executive}}</td>
+                                <td><a type="button"
+                                        href="{% url 'User:accounts_petty_cash_expense_accept_recheck_approve' expense.id %}"
+                                        class="btn btn-sm btn-primary-soft">Approve</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
+            {% endblock %}

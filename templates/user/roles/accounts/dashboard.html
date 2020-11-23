@@ -1,36 +1,108 @@
 {% extends 'root/base.html' %}
 {% load static %}
-{% block title %}Accountant | Base Account{% endblock %}
-{% block css_block %}
-<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
-{% endblock %}
+{% block title %}Dashboard | Accounts{% endblock %}
 {% block content %}
-{% if messages %}
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    {% for message in messages %}
-    {{message}}
-    {% endfor %}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endif %}
-<div class="row">
-    <div class="col-12">
-        <div class="card ">
-            <div class="card-header pdn-sm-x-40">
-                <h6>Create Base Account</h6>
-            </div>
 
-            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
-                <div class="pdn-sm-55 pdn-15 bdr">
-                    Accounts
+<div class="row row-xs">
+    <div class="col-lg-3 col-sm-12 col-md-3">
+        <div class="card card-widget shadow-none ">
+            <div class="card-body widget-aristocrat">
+                <div class="d-flex justify-content-between">
+                    <div class="align-items-center">
+                        <h6>
+                            <a href="{% url 'User:accounts_petty_cash_expense' %}">Pending
+                                Expense(Petty Cash)</a>
+                        </h6>
+                        <h4>
+                            {{pending_expense}}
+                        </h4>
+                    </div>
+                    <div class="align-items-center">
+                        <span class="widget-icon-aristocrat">
+                            <i class="icon-wallet"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block js_block %}
-    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
-    <script src="{% static 'js/components/select2-init.js' %}"></script>
-    {% endblock %}
+    <div class="col-lg-3 col-sm-12 col-md-3">
+        <div class="card shadow-none  card-widget">
+            <div class="card-body widget-info ">
+                <div class="d-flex justify-content-between">
+                    <div class="align-items-center">
+                        <h6>
+                            <a href="{% url 'User:accounts_petty_cash_expense_accept_recheck' %}">Approve Expenses</a>
+                        </h6>
+                        <h4>
+                            {{approve_expense}}
+                        </h4>
+                    </div>
+                    <div class="align-items-center">
+                        <span class="widget-icon-info">
+                            <i class="icon-basket"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12 col-md-3">
+        <div class="card shadow-none card-widget ">
+            <div class="card-body widget-success">
+                <div class="d-flex justify-content-between">
+                    <div class="align-items-center">
+                        <h6>
+                            Revenue
+                        </h6>
+                        <h4>
+                            $00
+                        </h4>
+                    </div>
+                    <div class="align-items-center">
+                        <span class="widget-icon-success">
+                            <i class="icon-layers"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12 col-md-3">
+        <div class="card shadow-none card-widget ">
+            <div class="card-body widget-warning">
+                <div class="d-flex justify-content-between">
+                    <div class="align-items-center">
+                        <h6>
+                            Visitors
+                        </h6>
+                        <h4>
+                            00
+                        </h4>
+                    </div>
+                    <div class="align-items-center">
+                        <span class="widget-icon-warning">
+                            <i class="icon-chart"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js_block %}
+<script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+<script src="{% static 'js/components/dashboard-init.js' %}"></script>
+<script src="{% static 'js/components/datatable-init.js' %}"></script>
+{% endblock %}

@@ -9,4 +9,6 @@ urlpatterns = [
          name='new_expense'),
     path('all-expense/', views.all_expense,
          name='all_expense'),
+    path('new-recurring-expense/', views.new_recurring_expense,
+         name='new_recurring_expense'),
 ]

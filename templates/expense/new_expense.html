@@ -50,6 +50,13 @@
                                     <option value="{{account.id}}">{{account.account_name}}</option>
                                     {% endfor %}
                                 </select>
+                                <hr>
+                                <select name="expense_account" class="form-control" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for p in permission %}
+                                    <option value="">{{p.name}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">

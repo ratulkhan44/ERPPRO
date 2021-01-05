@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
+
 
 def required_role(allowed_roles=[]):
     def decorator(view_func):
@@ -13,4 +14,3 @@ def required_role(allowed_roles=[]):
         return wrap
 
     return decorator
-        

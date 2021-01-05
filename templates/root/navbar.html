@@ -98,7 +98,7 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="{% url 'Expense:new_recurring_expense' %}">
                   Recurring Expense
                 </a>
               </li>
@@ -237,6 +237,8 @@
             </ul>
           </li>
 
+          <!-- {% if perms.expense.can_add_expense %} -->
+
           <!--User-->
           <li class="nav-item has-submenu">
             <a href="#" class="nav-link">
@@ -256,7 +258,7 @@
               </li>
             </ul>
           </li>
-
+          <!-- {% endif %} -->
           <li class="nav-title">
             Reports
           </li>

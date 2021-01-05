@@ -137,12 +137,29 @@
 
                                 {{form.profile_pic}}
                             </div>
+                            <div class="form-group col-md-4">
+
+                                <div class="invalid-passport-feedback text-danger"></div>
+                            </div>
+
                             <!-- <label for="address" class="col-form-label col-md-2 mgn-t-20">
                                 Address :
                             </label> -->
                             <!-- <div class="form-group col-md-4">
                                 {{form.address}}
                             </div> -->
+                        </div>
+                        <div class="pdn-t-20-imp mgn-t-20">
+                            <h4 class="text-center">User Permissions</h4>
+                            <div class="form-group row border pdn-20-imp mgn-20">
+                                <!-- <label for="user_permissions" class="col-md-2 col-form-label">User Permissions:</label> -->
+                                {% for permission in form.user_permissions %}
+                                <div class="form-group col-md-4 ">
+                                    {{permission}}
+                                </div>
+                                {% endfor %}
+                            </div>
+
                         </div>
                         <button type="submit" class="btn btn-primary ml-3 my-4">
                             Save

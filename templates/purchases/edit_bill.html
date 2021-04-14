@@ -1,0 +1,326 @@
+{% extends 'root/base.html' %} {% block title %} Purchase | Edit Bill {% endblock %}
+{% load custom_filter %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Purchase | Edit Bill +</h6>
+                </div>
+                <div class="">
+                    {% if request.user.is_authenticated %}
+                    {% if request.user.user_role|make_string == 'Supervisor' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:supervisor_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Accounts' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:accounts_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Executive' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:executive_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Employee' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:employee_dashboard' %}">Back To Dashboard</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="order" class="card-body pdn-20 pdn-sm-40">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert" v-if="successMessage">
+                    [[successMessage]]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST" class="p-4" action="{% url 'Purchase:create_purchase_order' %}">
+                        <div class="form-group row">
+                            <label for="customer_name" class="col-md-2 col-form-label">Vendor Name : </label>
+                            <div class="form-group col-md-4">
+                                <select name="vendor_name" class="form-control" v-model="vendor_name" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for vendor in vendors %}
+                                    <option value="{{vendor.id}}">{{vendor.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <label for="bill_no" class="col-md-2 col-form-label">Bill# : </label>
+                            <div class="form-group col-md-4">
+                                <input type="text" name="bill_no" id="bill_no" v-model="bill_no" class="form-control"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="estimate_no" class="col-md-2 col-form-label">Reference : </label>
+                            <div class="form-group col-md-4">
+                                <input type="text" name="reference" id="reference" v-model="reference"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="order_date" class="col-md-2 col-form-label">Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="bill_date" name="bill_date"
+                                    v-model="bill_date" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="due_date" class="col-md-2 col-form-label">Due Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="due_date" name="due_date"
+                                    v-model="due_date" />
+                            </div>
+                        </div>
+                        <br>
+
+                        <table class="table table-bordered">
+                            <thead class="bgd-gray-1">
+                                <tr>
+                                    <th style="width: 220px;">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Rate</th>
+                                    <th>Discount (%)</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <tr v-for="(item, k) in items" :key="k">
+                                <td>
+                                    <select name="item_name" class="form-control item_details" @change="onCodeChange"
+                                        v-model="item.item_name" required>
+                                        <option value="" disabled>Select</option>
+                                        {% for product in products %}
+                                        <option value="{{product.id}}">{{product.product_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input id="item_quantity" type="text" class="form-control" name="item_quantity"
+                                        v-model="item.item_quantity" />
+
+
+                                    <small v-if="item.item_name" class="form-text text-muted txt-14">Stock On Hand:
+                                        [[item.stock_on_hand]] [[item.item_unit]]</small>
+                                </td>
+
+                                <td>
+                                    <input id="item_price" type="text" class="form-control" name="item_price"
+                                        v-model="item.item_price" />
+                                </td>
+                                <td>
+                                    <input id="item_discount" type="text" class="form-control" name="item_discount"
+                                        v-model="item.item_discount" />
+                                </td>
+
+                                <td>
+                                    <select name="customer" class="form-control" v-model="item.customer" required>
+                                        <option value="" disabled>Select</option>
+                                        {% for customer in customers %}
+                                        <option value="{{customer.id}}">{{customer.customer_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td><input id="item_amount" type="text" disabled class="form-control" name="item_amount"
+                                        :value="getDiscount(item.item_price,item.item_quantity,item.item_discount,k)" />
+
+                                </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        @click="deleteRow(k, item)">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tfoot class="bgd-gray-1">
+                                <tr>
+                                    <td colspan="5" class="text-right">Total</td>
+                                    <td class="text-left">[[subTotal]] BDT</td>
+
+                                </tr>
+
+                            </tfoot>
+                        </table>
+                        <button type="button" @click="addNewRow" class="btn btn-primary-soft mgn-b-10 mgn-l-14">
+                            <i class="icon-plus"></i> Add Line
+                        </button>
+
+                        <br>
+
+                        <div class="bgd-gray-1 pdn-y-30 pdn-x-20 mgn-t-30">
+                            <div class="form-group row">
+                                <label for="notes" class="col-md-2 col-form-label">Notes: </label>
+                                <div class="form-group col-md-4 bdr-r">
+                                    <textarea class="form-control" name="notes" rows="3" placeholder="Notes"
+                                        v-model="notes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mgn-t-45">
+                                <input class="btn btn-primary-soft mgn-l-20" type="submit" value="Save and Draft"
+                                    v-on:click.prevent="submitForm()">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_block%}
+
+<script>
+    var get_id = '{{bill_id}}'
+    var vm = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#order',
+        data: {
+            vendor_name: '',
+            bill_date: '',
+            due_date: '',
+            bill_no: '',
+            reference: '',
+            notes: '',
+            successMessage: '',
+            items: []
+        },
+        methods: {
+
+            getDiscount: function (item_price, item_quantity, item_discount, k) {
+                let total = (item_price - (item_price * (item_discount / 100))) * item_quantity;
+                this.items[k].item_amount = total;
+                return total;
+            },
+
+            addNewRow: function () {
+                this.items.push({
+                    item_name: '',
+                    stock_on_hand: '',
+                    item_price: 0.00,
+                    item_quantity: 1,
+                    item_discount: 0,
+                    customer: ''
+                });
+            },
+            deleteRow: function (index, item) {
+                var idx = this.items.indexOf(item);
+                if (idx > 0) {
+                    this.items.splice(idx, 1);
+                }
+            },
+            submitForm: function () {
+
+                axios({
+                    method: "POST",
+                    url: `http://127.0.0.1:8000/purchases/create-bill`, //django path name
+                    headers: { 'X-CSRFTOKEN': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                    data: { "vendor_name": this.vendor_name, "bill_date": this.bill_date, "due_date": this.due_date, "bill_no": this.bill_no, "reference": this.reference, "notes": this.notes, "items": this.items },
+                })
+                    .then(response => {
+                        this.successMessage = "Bill Successfully Created";
+                        setTimeout(function () { window.location.reload(); }, 2500)
+                        $('html, body').animate({ scrollTop: 0 }, 'slow');
+                    })
+                // console.log([this.items]);
+                this.vendor_name = '',
+                    this.bill_date = '',
+                    this.due_date = '',
+                    this.bill_no = '',
+                    this.reference = '',
+                    this.notes = '',
+                    this.items = [{
+                        item_name: '',
+                        stock_on_hand: '',
+                        item_price: 0.00,
+                        item_unit: '',
+                        item_quantity: 1,
+                        item_discount: 0,
+                        customer: ''
+
+                    }]
+            },
+
+            onCodeChange() {
+                for (let i = 0; i < this.items.length; i++) {
+                    var productID = this.items[i].item_name;
+                    console.log(productID);
+                    var productURL = 'http://127.0.0.1:8000/purchases/create-purchase-order/getrate/' + productID;
+                    console.log(productURL);
+
+                    axios.get(productURL)
+                        .then((response) => {
+                            console.log(response);
+                            let item_inventory = response.data[0].fields.track_inventory;
+                            console.log(item_inventory);
+
+                            if (!item_inventory) {
+
+                                this.items[i].item_price = response.data[0].fields.selling_price;
+                                this.items[i].item_unit = response.data[0].fields.unit;
+                                this.items[i].stock_on_hand = "";
+                            } else {
+                                this.items[i].item_price = response.data[0].fields.selling_price;
+                                this.items[i].stock_on_hand = response.data[1].fields.opening_stock;
+                                this.items[i].item_unit = response.data[0].fields.unit;
+                            }
+                        });
+
+                }
+
+            },
+        },
+
+        computed: {
+            subTotal: function () {
+                var total = this.items.reduce(function (accumulator, item) {
+                    return accumulator + Number((item.item_price - (item.item_price * (item.item_discount / 100))) * item.item_quantity);
+                }, 0)
+                return total;
+            },
+        },
+        mounted() {
+            var url = `http://127.0.0.1:8000/purchases/bill-edit/${get_id}/`
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+
+                    this.vendor_name = data[0].fields.vendor,
+                        this.bill_date = data[0].fields.bill_date,
+                        this.due_date = data[0].fields.due_date,
+                        this.bill_no = data[0].fields.bill_no,
+                        this.reference = data[0].fields.reference,
+                        this.notes = data[0].fields.notes
+                    for (let i = 1; i < data.length; i++) {
+                        var my_obj = {};
+
+                        my_obj['item_name'] = data[i].fields.item_name;
+                        my_obj['stock_on_hand'] = data[i].fields.stock_on_hand;
+                        my_obj['item_price'] = data[i].fields.item_price;
+                        my_obj['item_unit'] = data[i].fields.item_unit;
+                        my_obj['item_quantity'] = data[i].fields.item_quantity;
+                        my_obj['item_discount'] = data[i].fields.item_discount;
+                        my_obj['item_amount'] = data[i].fields.item_amount;
+                        my_obj['customer'] = data[i].fields.customer;
+                        this.items.push(my_obj);
+                    }
+
+                })
+        }
+
+    })
+</script>
+
+{% endblock %}

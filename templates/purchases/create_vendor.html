@@ -41,70 +41,38 @@
                                 {{form.department}}
                             </div>
 
-                            <label for="contact" class="col-md-2 col-form-label">Mobile No : </label>
+                            <label for="contact" class="col-md-2 col-form-label">Designation : </label>
                             <div class="form-group col-md-4">
-                                {{form.contact}}
+                                {{form.designation}}
                                 <div class="invalid-contact-feedback text-danger"></div>
                             </div>
                         </div>
 
                         <div class="form-group row">
+                            <label for="contact" class="col-md-2 col-form-label">Mobile No : </label>
+                            <div class="form-group col-md-4">
+                                {{form.contact}}
+                                <div class="invalid-contact-feedback text-danger"></div>
+                            </div>
                             <label for="email" class="col-md-2 col-form-label">Email : </label>
                             <div class="form-group col-md-4">
                                 {{form.email}}
                                 <div class="invalid-email-feedback text-danger"></div>
                             </div>
-                            <label for="blood_group" class="col-md-2 col-form-label">Blood Group : </label>
-                            <div class="form-group col-md-4">
-                                {{form.blood_group}}
-                            </div>
-
                         </div>
 
                         <div class="form-group row">
-                            <label for="dob" class="col-md-2 col-form-label">Datye Of Birth : </label>
+                            <label for="dob" class="col-md-2 col-form-label">Website : </label>
                             <div class="form-group col-md-4">
-                                {{form.dob}}
+                                {{form.website}}
                             </div>
-                            <label for="marital_status" class="col-md-2 col-form-label">Marital Status : </label>
+                            <label for="marital_status" class="col-md-2 col-form-label">Opening Balance : </label>
                             <div class="form-group col-md-4">
-                                {{form.marital_status}}
+                                {{form.opening_balance}}
                             </div>
 
                         </div>
-
-
                         <div class="form-group row">
-                            <label for="nid" class="col-md-2 col-form-label">NID NO : </label>
-                            <div class="form-group col-md-4">
-                                {{form.nid}}
-                                <div class="invalid-nid-feedback text-danger"></div>
-                            </div>
-                            <label for="passport" class="col-md-2 col-form-label">Passport NO : </label>
-                            <div class="form-group col-md-4">
-                                {{form.passport}}
-                                <div class="invalid-passport-feedback text-danger"></div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="tracking" class="col-md-2 col-form-label">Tracking NO : </label>
-                            <div class="form-group col-md-4">
-                                {{form.tracking}}
-                                <div class="invalid-tracking-feedback text-danger"></div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <!-- <div class="form-group">
-                                <label for="exampleFormControlFile1">Example file input</label>
-                                {{form.image}}
-                            </div> -->
-                            <div class="form-group">
-                                <label for="exampleFormControlFile1">Image:</label>
-
-                                {{form.image}}
-                            </div>
                             <label for="address" class="col-form-label col-md-2 mgn-t-20">
                                 Address :
                             </label>
@@ -123,10 +91,10 @@
     {% endblock %}
 
     {% block js_block%}
-    <script src="{% static 'js/components/people_validation.js' %}"></script>
+    <!-- <script src="{% static 'js/components/people_validation.js' %}"></script> -->
 
 
-    <script>
+    <!-- <script>
         $('.company').on('change', function () {
             console.log("xyz");
             var companyID = $('option:selected', this).val();
@@ -147,6 +115,6 @@
             });
 
         });
-    </script>
+    </script> -->
 
     {% endblock %}

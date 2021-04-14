@@ -1,0 +1,79 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}People | Company{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Purchases | Purchases Order List</h6>
+                </div>
+                <div class="">
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'Purchase:create_purchase_order' %}">Create
+                        Purchase Order</a>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Purchase Order No</th>
+                                <th>Order Date</th>
+                                <th>Reference</th>
+                                <th>Vendor Name</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Checked By</th>
+                                <th>Approved By</th>
+                                <th>Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in order_lists %}
+                            <tr>
+                                <td><a
+                                        href="{% url 'Purchase:purchase_order_details' id=order.id %}">{{order.order_no}}</a>
+                                </td>
+                                <td>{{order.order_date}}</td>
+                                <td>{{order.reference}}</td>
+                                <td>{{order.vendor}}</td>
+                                <td>{{order.status}}</td>
+                                <td>{{order.get_total_amount}}</td>
+                                {% if order.is_supervisor == True and order.approved_supervisor_id %}
+                                <td>{{order.approved_supervisor}}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                {% if order.is_executive == True and order.approved_executive_id %}
+                                <td>{{order.approved_executive}}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td>{{order.created_by}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
+            {% endblock %}

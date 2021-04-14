@@ -1,0 +1,289 @@
+{% extends 'root/base.html' %} {% block title %} Purchase | Purchase Order {% endblock %}
+{% load custom_filter %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Purchase | Purchase Order +</h6>
+                </div>
+                <div class="">
+                    {% if request.user.is_authenticated %}
+                    {% if request.user.user_role|make_string == 'Supervisor' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:supervisor_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Accounts' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:accounts_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Executive' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:executive_dashboard' %}">Back To Dashboard</a>
+                    {% elif request.user.user_role|make_string == 'Employee' %}
+                    <a type="button" class="btn btn-primary-soft mb-2"
+                        href="{% url 'User:employee_dashboard' %}">Back To Dashboard</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="order" class="card-body pdn-20 pdn-sm-40">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert" v-if="successMessage">
+                    [[successMessage]]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="pdn-sm-55 pdn-15 bdr">
+                    <form method="POST" class="p-4" action="{% url 'Purchase:create_purchase_order' %}">
+                        <div class="form-group row">
+                            <label for="customer_name" class="col-md-2 col-form-label">Vendor Name : </label>
+                            <div class="form-group col-md-4">
+                                <select name="vendor_name" class="form-control" v-model="vendor_name" required>
+                                    <option value="" disabled>Select</option>
+                                    {% for vendor in vendors %}
+                                    <option value="{{vendor.id}}">{{vendor.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <label for="estimate_no" class="col-md-2 col-form-label">Purchase Order : </label>
+                            <div class="form-group col-md-4">
+                                <input type="text" name="purchase_order" id="purchase_order" v-model="purchase_order"
+                                    class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="estimate_no" class="col-md-2 col-form-label">Reference : </label>
+                            <div class="form-group col-md-4">
+                                <input type="text" name="reference" id="reference" v-model="reference"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="estimate_date" class="col-md-2 col-form-label">Date : </label>
+                            <div class="form-group col-md-4">
+                                <input type="date" class="form-control" id="order_date" name="order_date"
+                                    v-model="order_date" />
+                            </div>
+                        </div>
+                        <br>
+
+                        <table class="table table-bordered">
+                            <thead class="bgd-gray-1">
+                                <tr>
+                                    <th style="width: 220px;">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Rate</th>
+                                    <th>Discount (%)</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <tr v-for="(item, k) in items" :key="k">
+                                <td>
+                                    <select name="item_name" class="form-control item_details" @change="onCodeChange"
+                                        v-model="item.item_name" required>
+                                        <option value="" disabled>Select</option>
+                                        {% for product in products %}
+                                        <option value="{{product.id}}">{{product.product_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input id="item_quantity" type="text" class="form-control" name="item_quantity"
+                                        v-model="item.item_quantity" />
+
+
+                                    <small v-if="item.item_name" class="form-text text-muted txt-14">Stock On Hand:
+                                        [[item.stock_on_hand]] [[item.item_unit]]</small>
+                                </td>
+
+                                <td>
+                                    <input id="item_price" type="text" class="form-control" name="item_price"
+                                        v-model="item.item_price" />
+                                </td>
+                                <td>
+                                    <input id="item_discount" type="text" class="form-control" name="item_discount"
+                                        v-model="item.item_discount" />
+                                </td>
+
+
+
+                                <td><input id="item_amount" type="text" disabled class="form-control" name="item_amount"
+                                        :value="getDiscount(item.item_price,item.item_quantity,item.item_discount,k)" />
+
+                                </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        @click="deleteRow(k, item)">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tfoot class="bgd-gray-1">
+                                <tr>
+                                    <td colspan="4" class="text-right">Total</td>
+                                    <td class="text-left">[[subTotal]] BDT</td>
+
+                                </tr>
+
+                            </tfoot>
+                        </table>
+                        <button type="button" @click="addNewRow" class="btn btn-primary-soft mgn-b-10 mgn-l-14">
+                            <i class="icon-plus"></i> Add Line
+                        </button>
+
+                        <br>
+
+                        <div>
+                            <div class="mgn-t-45">
+                                <input class="btn btn-primary-soft mgn-l-20" type="submit" value="Save and Draft"
+                                    v-on:click.prevent="submitForm()">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_block%}
+
+<script>
+    var vm = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#order',
+        data: {
+            vendor_name: '',
+            order_date: '',
+            purchase_order: '',
+            reference: '',
+            successMessage: '',
+            items: [{
+                item_name: '',
+                stock_on_hand: '',
+                item_price: 0.00,
+                item_unit: '',
+                item_quantity: 1,
+                item_discount: 0,
+
+            },
+            ]
+        },
+        methods: {
+
+            getDiscount: function (item_price, item_quantity, item_discount, k) {
+                let total = (item_price - (item_price * (item_discount / 100))) * item_quantity;
+                this.items[k].item_amount = total;
+                return total;
+            },
+
+            addNewRow: function () {
+                this.items.push({
+                    item_name: '',
+                    stock_on_hand: '',
+                    item_price: 0.00,
+                    item_quantity: 1,
+                    item_discount: 0,
+
+                });
+            },
+            deleteRow: function (index, item) {
+                var idx = this.items.indexOf(item);
+                if (idx > 0) {
+                    this.items.splice(idx, 1);
+                }
+            },
+            submitForm: function () {
+
+                axios({
+                    method: "POST",
+                    url: "http://127.0.0.1:8000/purchases/create-purchase-order/", //django path name
+                    headers: { 'X-CSRFTOKEN': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                    data: { "vendor_name": this.vendor_name, "order_date": this.order_date, "purchase_order": this.purchase_order, "reference": this.reference, "items": this.items },
+                })
+                    .then(response => {
+                        this.successMessage = "Purchase Order Successfully Created";
+                        setTimeout(function () { window.location.reload(); }, 2500)
+                        $('html, body').animate({ scrollTop: 0 }, 'slow');
+                    })
+                // console.log([this.items]);
+                this.vendor_name = '',
+                    this.order_date = '',
+                    this.purchase_order = '',
+                    this.reference = '',
+                    this.items = [{
+                        item_name: '',
+                        stock_on_hand: '',
+                        item_price: 0.00,
+                        item_unit: '',
+                        item_quantity: 1,
+                        item_discount: 0,
+
+                    }]
+            },
+
+            onCodeChange() {
+                for (let i = 0; i < this.items.length; i++) {
+                    var productID = this.items[i].item_name;
+                    console.log(productID);
+                    var productURL = 'getrate/' + productID;
+                    console.log(productURL);
+
+                    axios.get(productURL)
+                        .then((response) => {
+                            console.log(response);
+                            let item_inventory = response.data[0].fields.track_inventory;
+                            console.log(item_inventory);
+
+                            if (!item_inventory) {
+
+                                this.items[i].item_price = response.data[0].fields.selling_price;
+                                this.items[i].item_unit = response.data[0].fields.unit;
+                                this.items[i].stock_on_hand = "";
+                            } else {
+                                this.items[i].item_price = response.data[0].fields.selling_price;
+                                this.items[i].stock_on_hand = response.data[1].fields.opening_stock;
+                                this.items[i].item_unit = response.data[0].fields.unit;
+                            }
+                        });
+
+                }
+
+            },
+
+
+
+        },
+
+        computed: {
+            subTotal: function () {
+                var total = this.items.reduce(function (accumulator, item) {
+                    return accumulator + Number((item.item_price - (item.item_price * (item.item_discount / 100))) * item.item_quantity);
+                }, 0)
+                return total;
+            },
+
+
+
+
+        },
+        mounted() {
+            axios.get('http://127.0.0.1:8000/purchases/get-order-no/').then(response => {
+                this.purchase_order = response.data.order_no;
+            })
+        }
+
+    })
+</script>
+
+{% endblock %}

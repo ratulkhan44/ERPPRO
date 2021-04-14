@@ -153,6 +153,43 @@
           </div>
         </div>
       </li>
+
+      <!--Settings-->
+      <li class="dropdown">
+        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          class="nav-link notification-icon">
+          <i class="icon-settings"></i>
+        </a>
+        <div class="dropdown-menu pdn-8" aria-labelledby="dropdownMenuButton">
+          <div class="boxed-dropdown">
+            <a class="dropdown-icon-menu pt-3 pb-3" href="{% url 'Settings:opening_balance' %}">
+              <i class="icon-calculator d-block"></i>
+              <span>Opening Balance</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="chat.html">
+              <i class="icon-bubbles d-block"></i>
+              <span>Messages</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="#">
+              <i class="icon-bag d-block"></i>
+              <span>Orders</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="fullcalendar.html">
+              <i class="icon-calendar d-block"></i>
+              <span>Calender</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="fullcalendar.html">
+              <i class="icon-calendar d-block"></i>
+              <span>Calender</span>
+            </a>
+            <a class="dropdown-icon-menu pt-3 pb-3" href="fullcalendar.html">
+              <i class="icon-calendar d-block"></i>
+              <span>Calender</span>
+            </a>
+          </div>
+        </div>
+      </li>
+
       <li class="dropdown">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
           class="nav-link user-dropdown-icon">
@@ -162,8 +199,8 @@
           <div class="media">
             <img src="{% static 'images/default.jpg' %}" alt="Notification" class="user-thumb rounded-circle mr-3" />
             <div class="media-body">
-              <h5 class="mgn-0">Sirus Holding</h5>
-              sirus@neonmail.com
+              <h5 class="mgn-0">{{request.user.username}}</h5>
+              {{request.user.email}}
             </div>
           </div>
           <ul class="list-group list-group-borderless mgn-t-15">

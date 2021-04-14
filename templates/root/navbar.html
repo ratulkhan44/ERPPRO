@@ -35,21 +35,21 @@
           </li>
           {% elif request.user.user_role|make_string == 'Executive' %}
           <li class="nav-item">
-            <a href="{% url 'User:accounts_dashboard' %}" class="nav-link">
+            <a href="{% url 'User:executive_dashboard' %}" class="nav-link">
               <i class="icon-grid"></i>
               <span>Dashboard</span>
             </a>
           </li>
           {% elif request.user.user_role|make_string == 'Employee' %}
           <li class="nav-item">
-            <a href="{% url 'User:accounts_dashboard' %}" class="nav-link">
+            <a href="{% url 'User:employee_dashboard' %}" class="nav-link">
               <i class="icon-grid"></i>
               <span>Dashboard</span>
             </a>
           </li>
           {% elif request.user.user_role|make_string == 'Admin' %}
           <li class="nav-item">
-            <a href="{% url 'User:accounts_dashboard' %}" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="icon-grid"></i>
               <span>Dashboard</span>
             </a>
@@ -137,23 +137,33 @@
             </a>
             <ul>
               <li>
-                <a href="">
-                  Vendor
+                <a href="{% url 'Purchase:vendor_list' %}">
+                  All Vendor
                 </a>
               </li>
               <li>
-                <a href="">
-                  Requisition
+                <a href="{% url 'Purchase:create_vendor' %}">
+                  Create Vendor
                 </a>
               </li>
               <li>
-                <a href="">
+                <a href="{% url 'Purchase:create_purchase_order' %}">
                   Purchase Orders
                 </a>
               </li>
               <li>
-                <a href="">
-                  Bills
+                <a href="{% url 'Purchase:purchase_order_list' %}">
+                  Purchase Orders List
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Purchase:bill_list' %}">
+                  All Bills
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'Purchase:create_bill' %}">
+                  Create Bill
                 </a>
               </li>
               <li>
@@ -237,9 +247,6 @@
             </ul>
           </li>
 
-          <!-- {% if perms.expense.can_add_expense %} -->
-
-          <!--User-->
           <li class="nav-item has-submenu">
             <a href="#" class="nav-link">
               <i class="icon-calculator"></i>
@@ -258,7 +265,6 @@
               </li>
             </ul>
           </li>
-          <!-- {% endif %} -->
           <li class="nav-title">
             Reports
           </li>

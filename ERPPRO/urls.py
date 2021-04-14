@@ -1,8 +1,8 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
-from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
+from django.urls import include, path
 from User import views
 
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
     path('products/', include('Products.urls')),
     path('expense/', include('Expense.urls')),
     path('reports/', include('Reports.urls')),
+    path('settings/', include('Settings.urls')),
 
 
 ]

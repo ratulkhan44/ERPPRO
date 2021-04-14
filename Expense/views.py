@@ -6,12 +6,14 @@ from django.contrib import messages
 from .models import Expense
 from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
 
 from django.contrib.auth.decorators import permission_required
 
 
+# @permission_required('Expense.Can add expense')
 def new_expense(request):
     paid_accounts = CreateAccount.objects.filter(
         Q(account_name__iexact='Cash') | Q(account_name__iexact='Bank A/C') | Q(account_name__iexact='Petty Cash')).order_by('id')
@@ -48,5 +50,7 @@ def new_recurring_expense(request):
         Q(account_name__iexact='Cash') | Q(account_name__iexact='Bank A/C') | Q(account_name__iexact='Petty Cash')).order_by('id')
     expense_accounts = CreateAccount.objects.filter(Q(account_type_id=7) | Q(account_type_id=8) | Q(account_type_id=9) | Q(
         account_type_id=10) | Q(account_type_id=11) | Q(account_type_id=12) | Q(account_type_id=13) | Q(account_type_id=14))
+    # expense_accounts = AccountType.objects.filter(
+    #     base_account__base_account="Income")
     peoples = People.objects.all()
     return render(request, 'expense/recurring_expense.html', context={'expense_accounts': expense_accounts, 'paid_accounts': paid_accounts, 'peoples': peoples})

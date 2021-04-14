@@ -58,7 +58,7 @@
                                 <select name="expense_account" class="form-control" required>
                                     <option value="" disabled>Select</option>
                                     {% for account in expense_accounts %}
-                                    <option value="{{account.id}}">{{account.account_name}}</option>
+                                    <option value="{{account.id}}">{{account}}</option>
                                     {% endfor %}
                                 </select>
                             </div>

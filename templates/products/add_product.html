@@ -24,32 +24,24 @@
 
             <div id="app" class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
                 <div class="pdn-sm-55 pdn-15 bdr" id="app">
-                    <form action="">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="product_type" class="col-md-2 col-form-label">Type : </label>
+                            <div class="form-group col-md-4">
+                                {{ form.product_type }}
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="product_name" class="col-md-2 col-form-label">Name : </label>
                             <div class="form-group col-md-4">
-                                <input type="text" class="form-control" id="product_name" name="product_name"
-                                    required />
+                                {{ form.product_name }}
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="product_unit" class="col-md-2 col-form-label">Unit : </label>
                             <div class="form-group col-md-4">
-                                <select name="product_unit" class="form-control" required>
-                                    <option value="">Select Unit</option>
-                                    <option value="box">box</option>
-                                    <option value="cm">cm</option>
-                                    <option value="dz">dz</option>
-                                    <option value="ft">ft</option>
-                                    <option value="g">g</option>
-                                    <option value="in">in</option>
-                                    <option value="kg">kg</option>
-                                    <option value="km">km</option>
-                                    <option value="lb">lb</option>
-                                    <option value="mg">mg</option>
-                                    <option value="m">m</option>
-                                    <option value="pcs">pcs</option>
-                                </select>
+                                {{ form.unit }}
                             </div>
                         </div>
 
@@ -73,20 +65,19 @@
                                                     :
                                                 </label>
                                                 <div class="form-group col-md-8">
-                                                    <input type="text" class="form-control" id="selling_price"
-                                                        name="selling_price" required />
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">BDT</span>
+                                                        </div>
+                                                        {{ form.selling_price }}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="product_unit" class="col-md-4 col-form-label">Account :
                                                 </label>
                                                 <div class="form-group col-md-8">
-                                                    <select name="product_unit" class="form-control" required>
-                                                        <option value="">Select Account</option>
-                                                        {% for account in sales_accounts %}
-                                                        <option value="{{account.id}}">{{account}}</option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    {{form.selling_account}}
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -94,8 +85,7 @@
                                                     class="col-md-4 col-form-label">Description
                                                     : </label>
                                                 <div class="form-group col-md-8">
-                                                    <textarea class="form-control" name="selling_description"
-                                                        id="selling_description" rows="4"></textarea>
+                                                    {{ form.selling_description }}
                                                 </div>
                                             </div>
                                         </div>
@@ -121,20 +111,19 @@
                                                     Price :
                                                 </label>
                                                 <div class="form-group col-md-8">
-                                                    <input type="text" class="form-control" id="purchase_price"
-                                                        name="purchase_price" required />
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">BDT</span>
+                                                        </div>
+                                                        {{ form.cost_price }}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="product_unit" class="col-md-4 col-form-label">Account :
                                                 </label>
                                                 <div class="form-group col-md-8">
-                                                    <select name="product_unit" class="form-control" required>
-                                                        <option value="">Select Account</option>
-                                                        {% for account in purchase_accounts %}
-                                                        <option value="{{account.id}}">{{account}}</option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    {{ form.cost_account }}
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -142,8 +131,7 @@
                                                     class="col-md-4 col-form-label">Description
                                                     : </label>
                                                 <div class="form-group col-md-8">
-                                                    <textarea class="form-control" name="purchase_description"
-                                                        id="purchase_description" rows="4"></textarea>
+                                                    {{ form.cost_description }}
                                                 </div>
                                             </div>
                                         </div>
@@ -157,8 +145,8 @@
                                 <div class="card pdn-10">
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox checkbox-primary m-2">
-                                            <input type="checkbox" class="custom-control-input" id="invevtory_info"
-                                                v-model='invevtory_info'>
+                                            <input type="checkbox" name='track_inventory' class="custom-control-input"
+                                                id="invevtory_info" v-model='invevtory_info'>
                                             <label class="custom-control-label" for="invevtory_info">Track Inventory for
                                                 this
                                                 Product</label>
@@ -171,28 +159,29 @@
                                         <div class="form-group row pdn-l-10">
                                             <label for="product_unit" class="col-md-2 col-form-label">Account : </label>
                                             <div class="form-group col-md-4">
-                                                <select name="product_unit" class="form-control" required>
-                                                    <option value="">Select Account</option>
-                                                    <option value="{{inventory_account.id}}">{{inventory_account}}
-                                                    </option>
-                                                </select>
+                                                <div class="form-group col-md-8">
+                                                    {{ inventory_product_form.inventory_account }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row pdn-l-10">
                                             <label for="opening_stock" class="col-md-2 col-form-label">Opening Stock:
                                             </label>
                                             <div class="form-group col-md-4">
-                                                <input type="text" class="form-control" id="opening_stock"
-                                                    name="opening_stock" required />
+                                                <div class="form-group col-md-8">
+                                                    {{ inventory_product_form.opening_stock }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row pdn-l-10">
-                                            <label for="stock_unit" class="col-md-2 col-form-label">Opening Stock Per
+                                            <label for="stock_unit" class="col-md-2 col-form-label">Opening Stock Rate
+                                                Per
                                                 Unit :
                                             </label>
                                             <div class="form-group col-md-4">
-                                                <input type="text" class="form-control" id="stock_unit"
-                                                    name="stock_unit" required />
+                                                <div class="form-group col-md-8">
+                                                    {{ inventory_product_form.opening_stock_rate_per_unit }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -207,6 +196,7 @@
                             </div>
                         </div>
                     </form>
+                    <div>{{ form.errors }}</div>
                 </div>
             </div>
         </div>

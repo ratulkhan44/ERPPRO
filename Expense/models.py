@@ -34,7 +34,5 @@ class Expense(models.Model):
     approved_executive = models.ForeignKey(
         CustomUser, on_delete=models.DO_NOTHING, related_name='approved_executive', null=True)
 
-    class Meta:
-        permissions = (
-            ('permission_code', 'Friendly permission description'),
-        )
+    def __str__(self):
+        return self.expense_date

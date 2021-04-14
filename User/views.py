@@ -1,22 +1,26 @@
-from django.shortcuts import render, reverse, redirect
-from . import forms
-from .models import UserRole, CustomUser
+from Accountant.models import Transaction
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from Expense.models import Expense
-from django.db.models import Q
-from User.decorators import required_role
-from django.views import View
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_text
-from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from Accountant.models import Transaction
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect, render, reverse
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views import View
+from Expense.models import Expense
+from Purchases.models import Bill, PurchaseItem, PurchaseOrder
 from validate_email import validate_email
+
+from User.decorators import required_role
+
+from . import forms
+from .models import CustomUser, UserRole
+from .tokens import account_activation_token
+
 # Create your views here.
 
 
@@ -100,17 +104,16 @@ def user_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
         # import pdb
         # pdb.set_trace()
-        user = authenticate(username=username, password=password)
-
         if user:
             if user.is_active and str(user.user_role) == 'Accounts':
                 login(request, user)
                 return HttpResponseRedirect(reverse('User:accounts_dashboard'))
             elif user.is_active and str(user.user_role) == 'Employee':
                 login(request, user)
-                return render(request, 'user/roles/employee/dashboard.html')
+                return HttpResponseRedirect(reverse('User:employee_dashboard'))
             elif user.is_active and str(user.user_role) == 'Executive':
                 login(request, user)
                 return HttpResponseRedirect(reverse('User:executive_dashboard'))
@@ -133,12 +136,24 @@ def user_logout(request):
 
 
 @login_required
+@required_role(allowed_roles=['Employee'])
+def employee_dashboard(request):
+    order_lists = PurchaseOrder.objects.filter(
+        created_by_id=request.user.id).count()
+    bill_lists = Bill.objects.filter(status="Draft").count()
+    context = {'order_lists': order_lists, 'bill_lists': bill_lists}
+    return render(request, 'user/roles/employee/dashboard.html', context)
+
+
+@login_required
 @required_role(allowed_roles=['Supervisor'])
 def supervisor_dashboard(request):
     pending_expense = Expense.objects.filter(Q(is_supervisor=False) & Q(
         paid_account__account_name='Petty Cash')).count()
+    order_lists = PurchaseOrder.objects.filter(status='Pending').count()
     context = {
-        'pending_expense': pending_expense
+        'pending_expense': pending_expense,
+        'order_lists': order_lists
     }
     return render(request, 'user/roles/supervisior/dashboard.html', context)
 
@@ -269,8 +284,11 @@ def accounts_petty_cash_expense_accept_recheck_approve(request, id):
 def executive_dashboard(request):
     pending_expense = Expense.objects.filter(Q(is_supervisor=True) & Q(is_accounts_first=True) & Q(
         is_executive=False) & Q(paid_account__account_name='Petty Cash')).count()
+    order_lists = PurchaseOrder.objects.filter(
+        status='Checked').count()
     context = {
-        'pending_expense': pending_expense
+        'pending_expense': pending_expense,
+        'order_lists': order_lists
     }
     return render(request, 'user/roles/executive/dashboard.html', context)
 

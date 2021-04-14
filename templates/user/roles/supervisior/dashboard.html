@@ -10,6 +10,28 @@
                 <div class="d-flex justify-content-between">
                     <div class="align-items-center">
                         <h6>
+                            <a href="{% url 'Purchase:purchase_order_list' %}">Pending
+                                Purchase Order</a>
+                        </h6>
+                        <h4>
+                            {{order_lists}}
+                        </h4>
+                    </div>
+                    <div class="align-items-center">
+                        <span class="widget-icon-aristocrat">
+                            <i class="icon-wallet"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12 col-md-3">
+        <div class="card card-widget shadow-none ">
+            <div class="card-body widget-aristocrat">
+                <div class="d-flex justify-content-between">
+                    <div class="align-items-center">
+                        <h6>
                             <a href="{% url 'User:supervisior_petty_cash_expense' %}">Pending
                                 Expense(Petty Cash)</a>
                         </h6>

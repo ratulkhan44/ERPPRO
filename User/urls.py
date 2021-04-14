@@ -10,6 +10,8 @@ urlpatterns = [
     path('create-user/', views.create_user, name='create_user'),
     path('activate/<uidb64>/<token>/',
          views.ActivateAccount.as_view(), name='activate'),
+    path('employee/dashboard/', views.employee_dashboard,
+         name='employee_dashboard'),
     path('supervisor/dashboard/', views.supervisor_dashboard,
          name='supervisor_dashboard'),
     path('supervisor/petty-expense/', views.supervisior_petty_cash_expense,

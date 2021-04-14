@@ -1,0 +1,346 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Settings | Opening Balance{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'js/vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Opening Balance</h6>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp" id="app">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="migration_date" class="col-md-2 col-form-label">Migration Date : </label>
+                        <div class="form-group col-md-4">
+                            <input type="date" class="form-control" id="migration_date" required>
+                        </div>
+                    </div>
+                    <div id="accordion" class="collapsing-accordion">
+                        <div class="card">
+                            <div class="card-header bg-primary-soft" id="headingOne">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne"
+                                        aria-expanded="false" aria-controls="collapseOne">
+                                        <i class="icon-diamond"></i>
+                                        Asset
+                                    </a>
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion"
+                                style="">
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead class="bgd-gray-1">
+                                            <tr>
+                                                <th style="width: 220px;">Accounts</th>
+                                                <th>Available Balance</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                            </tr>
+                                        </thead>
+                                        {% for account in asset_accounts %}
+
+                                        <tr>
+                                            <td>
+                                                {{account}}
+                                                <input type="hidden" class="form-control" placeholder="account"
+                                                    name="account[]" value="{{account.id}}" v-model="openings.account">
+                                            </td>
+                                            <td class="text-center">
+                                                ---
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="Debit"
+                                                    name="debit[]" v-model="openings.debit" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="Credit"
+                                                    name="credit[]" v-model="openings.credit" />
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="card">
+                            <div class="card-header bg-danger-soft" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                                        aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="icon-wallet"></i>
+                                        Expense
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead class="bgd-gray-1">
+                                            <tr>
+                                                <th style="width: 220px;">Accounts</th>
+                                                <th>Available Balance</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                            </tr>
+                                        </thead>
+                                        {% for account in expense_accounts %}
+                                        <tr>
+                                            <td>
+                                                {{account}}
+                                            </td>
+                                            <td class="text-center">
+                                                ---
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="Debit"
+                                                    name="debit" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="Credit"
+                                                    name="credit" />
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header bg-success-soft" id="headingThree">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree">
+                                        <i class="icon-briefcase"></i>
+                                        Bank
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="bgd-gray-1">
+                                                <tr>
+                                                    <th style="width: 220px;">Accounts</th>
+                                                    <th>Available Balance</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tr>
+                                                <td>
+                                                    {{account}}
+                                                </td>
+                                                <td class="text-center">
+                                                    ---
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Debit"
+                                                        name="debit" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Credit"
+                                                        name="credit" />
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header bg-warning-soft" id="headingFour">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour"
+                                        aria-expanded="false" aria-controls="collapseThree">
+                                        <i class="icon-note"></i>
+                                        Liability
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="bgd-gray-1">
+                                                <tr>
+                                                    <th style="width: 220px;">Accounts</th>
+                                                    <th>Available Balance</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                </tr>
+                                            </thead>
+                                            {% for account in liability_accounts %}
+                                            <tr>
+                                                <td>
+                                                    {{account}}
+                                                </td>
+                                                <td class="text-center">
+                                                    ---
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Debit"
+                                                        name="debit" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Credit"
+                                                        name="credit" />
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header bg-primary-soft" id="headingFive">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive"
+                                        aria-expanded="false" aria-controls="collapseFive">
+                                        <i class="icon-bubble"></i>
+                                        Equity
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseFive" class="collapse" aria-labelledby="headingFive"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="bgd-gray-1">
+                                                <tr>
+                                                    <th style="width: 220px;">Accounts</th>
+                                                    <th>Available Balance</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                </tr>
+                                            </thead>
+                                            {% for account in equity_accounts %}
+                                            <tr>
+                                                <td>
+                                                    {{account}}
+                                                </td>
+                                                <td class="text-center">
+                                                    ---
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Debit"
+                                                        name="debit" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Credit"
+                                                        name="credit" />
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header bg-danger-soft" id="headingSix">
+                                <h5 class="mb-0">
+                                    <a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSix"
+                                        aria-expanded="false" aria-controls="collapseSix">
+                                        <i class="icon-handbag"></i>
+                                        Income
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseSix" class="collapse" aria-labelledby="headingSix"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="bgd-gray-1">
+                                                <tr>
+                                                    <th style="width: 220px;">Accounts</th>
+                                                    <th>Available Balance</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                </tr>
+                                            </thead>
+                                            {% for account in income_accounts %}
+                                            <tr>
+                                                <td>
+                                                    {{account}}
+                                                </td>
+                                                <td class="text-center">
+                                                    ---
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Debit"
+                                                        name="debit" v-model="openings.debit" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="Credit"
+                                                        name="credit" v-model="openings.credit" />
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                </form>
+            </div>
+
+
+
+
+        </div>
+    </div>
+    {% endblock %}
+    {% block js_block %}
+
+    <script>
+        var vm = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+
+                openings: [],
+            },
+
+        });
+        for (let index = 0; index < openings.length; index++) {
+            console.log(openings.account);
+        }
+    </script>
+
+
+
+    <script src="{% static 'js/vendor/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/components/select2-init.js' %}"></script>
+    {% endblock %}

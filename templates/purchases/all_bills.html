@@ -1,0 +1,67 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% block title %}Purchases | Bills{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-header pdn-sm-x-40 d-flex justify-content-between align-items-center">
+                <div class="">
+                    <h6>Purchases | Bill List</h6>
+                </div>
+                <div class="">
+                    <a type="button" class="btn btn-primary-soft mb-2" href="{% url 'Purchase:create_bill' %}">Create
+                        Bill</a>
+                </div>
+            </div>
+
+            <div class="card-body pdn-20 pdn-sm-40 pdn-t-20-imp">
+                <div class="table-responsive">
+                    <table id="myTable" class="dataTables_wrapper table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Bill No</th>
+                                <th>Bill Date</th>
+                                <th>Due Date</th>
+                                <th>Reference</th>
+                                <th>Vendor Name</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in bills %}
+                            <tr>
+                                <td><a href="{% url 'Purchase:bill_details' bill.id %}">{{bill.bill_no}}</a>
+                                </td>
+                                <td>{{bill.bill_date}}</td>
+                                <td>{{bill.due_date}}</td>
+                                <td>{{bill.reference}}</td>
+                                <td>{{bill.vendor}}</td>
+                                <td>{{bill.status}}</td>
+                                <td>{{bill.get_total_amount}}</td>
+                                <td>{{bill.created_by}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}
+            {% block js_block %}
+            <script src="{% static 'js/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/dataTables.buttons.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/jszip.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/pdfmake.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/vfs_fonts.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.html5.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.colVis.min.js' %}"></script>
+            <script src="{% static 'js/vendor/datatables/buttons.print.min.js' %}"></script>
+            <script src="{% static 'js/components/dashboard-init.js' %}"></script>
+            <script src="{% static 'js/components/datatable-init.js' %}"></script>
+            {% endblock %}
